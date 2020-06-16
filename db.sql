@@ -1,10 +1,10 @@
 USE master;
 GO
 
-CREATE DATABASE DreamTraveling1;
+CREATE DATABASE DreamTraveling;
 GO
 
-USE DreamTraveling1;
+USE DreamTraveling;
 GO
 
 CREATE TABLE tblUser
