@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="title" scope="page" value="${initParam.web_name}"/>
 
 <%@include file="/includes/header.jsp" %>
@@ -14,11 +15,11 @@
     <section class="search-tour mb-5">
         <form class="form-inline justify-content-end mb-5" action="LoadHome" method="POST">
             <div class="form-group mr-2">
-                <input type="text" class="date-dropper-check-in-out form-control" data-dd-roundtrip="my-trip" placeholder="From" name="fromDate" data-dd-default-date="">
+                <input type="text" class="date-dropper-check-in-out form-control" data-dd-roundtrip="my-trip" placeholder="From" name="fromDate" data-dd-default-date="<fmt:formatDate value="${requestScope.fromDate}" pattern="MM/dd/yyyy"/>">
             </div>
             <span class="mr-2">-</span>
             <div class="form-group mr-2">
-                <input type="text" class="date-dropper-check-in-out form-control" data-dd-roundtrip="my-trip" placeholder="To" name="toDate" data-dd-default-date="">
+                <input type="text" class="date-dropper-check-in-out form-control" data-dd-roundtrip="my-trip" placeholder="To" name="toDate" data-dd-default-date="<fmt:formatDate value="${requestScope.toDate}" pattern="MM/dd/yyyy"/>">
             </div>
             <div class="form-group mr-2">
                 <input type="text" class="form-control" name="name" placeholder="Name">
@@ -41,7 +42,7 @@
                         <img src="${tour.value.image}" alt="${tour.value.name}">
                         <div class="card-body">
                             <h5 class="card-title">${tour.value.name}</h5>
-                            <div class="small mb-4"><span>${tour.value.fromDate}</span> - <span>${tour.value.toDate}</span></div>
+                            <div class="small mb-4"><span><fmt:formatDate value="${tour.value.fromDate}" pattern="dd/MM/yyyy"/></span> - <span><fmt:formatDate value="${tour.value.toDate}" pattern="dd/MM/yyyy"/></span></div>
                             <p>${tour.value.review}</p>
                             <button class="btn btn-success w-100 mt-3">Book This Tour</button>
                         </div>

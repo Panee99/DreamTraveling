@@ -50,8 +50,8 @@ public class LoadHomeController extends HttpServlet {
             String paramPage = request.getParameter("page");
             String paramRpp = getServletContext().getInitParameter("rpp_tour");  // rows per page
 
-            /*=== parse date ===*/
- /*=== convert data ===*/
+            /*=== convert data ===*/
+ /*=== parse date ===*/
             String dateFormat = getServletContext().getInitParameter("date_format");
             if (dateFormat == null) {
                 dateFormat = "dd/MM/yyyy";
@@ -65,11 +65,15 @@ public class LoadHomeController extends HttpServlet {
                     java.util.Date utilToDate = dateFormater.parse(paramToDate);
                     fromDate = new Date(utilFromDate.getTime());
                     toDate = new Date(utilToDate.getTime());
+                    /*=== save date ===*/
+                    request.setAttribute("fromDate", fromDate);
+                    request.setAttribute("toDate", toDate);
                 } catch (ParseException e) {
                     fromDate = null;
                     toDate = null;
                 }
             }
+
 
             /*=== parse price ===*/
             Integer fromPrice = null;

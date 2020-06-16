@@ -22,6 +22,7 @@ $(function () {
     largeOnly: true,
     lock: "from",
     theme: "m",
+    defaultDate: null,
   });
   // init range slider
   $(".range-slider").jRange({
