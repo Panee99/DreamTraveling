@@ -1,0 +1,21 @@
+{
+  "name": "dreamtraveling",
+  "version": "1.0.0",
+  "description": "Project for Lab Java Web in FPT University",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "0i0g",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "X-editable": "github:talv/x-editable",
+    "animate.css": "^4.1.0",
+    "bootstrap": "^4.5.0",
+    "datedropper-pro": "^1.0.1",
+    "jquery": "^3.5.1",
+    "jquery-range": "github:nitinhayaran/jRange",
+    "sweetalert2": "^9.14.4"
+  }
+}

@@ -1,0 +1,89 @@
+body,
+html {
+  background-color: #f4f4f4;
+}
+div.datedropper.m {
+  --dd-color1: #28a745;
+  --dd-color2: #fff;
+  --dd-color3: #4d4d4d;
+  --dd-color4: #fff;
+
+  --dd-radius: 8px;
+  --dd-width: 180px;
+  --dd-shadow: 0 0 32px 0px rgba(0, 0, 0, 0.1);
+}
+.slider-container .back-bar .pointer-label {
+  font-size: 1.5rem;
+}
+.slider-container .back-bar .pointer-label.low {
+  top: -30px;
+}
+.slider-container .back-bar .pointer-label.high {
+  top: 30px;
+}
+.slider-container .back-bar .pointer-label {
+  background-color: initial;
+}
+#table-tour .td-img {
+  min-width: 330px;
+}
+
+#table-tour .td-img .figure img,
+#table-tour .td-img .figure {
+  margin-bottom: 0;
+}
+
+#table-tour .td-date {
+  min-width: 200px;
+}
+
+#table-tour .td-date span {
+  margin: 0 10px;
+}
+
+#table-tour .td-name {
+  width: 300px;
+  text-align: left;
+}
+#table-tour .td-action {
+  width: 200px;
+}
+#table-tour .td-action .btn {
+  margin: 0 5px;
+}
+
+.navbar {
+  background: #ffffff;
+}
+
+.modal.fade .modal-dialog {
+  -webkit-transform: translate(0);
+  -moz-transform: translate(0);
+  transform: translate(0);
+  transition-timing-function: ease;
+}
+/* error page */
+#error-page{
+  background-color: #000000;
+  height: 100%;
+  width: 100%;
+}
+#error-page .board {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 150px;
+  width: 500px;
+  margin: -75px 0 0 -250px;
+  padding: 20px;
+  font: 75px/75px Monoton, cursive;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 0 80px red, 0 0 30px FireBrick, 0 0 6px DarkRed;
+  color: red;
+}
+
+#error-page #error {
+  color: #fff;
+  text-shadow: 0 0 80px #ffffff, 0 0 30px #008000, 0 0 6px #0000ff;
+}
