@@ -61,6 +61,14 @@ $(function () {
         );
     });
   });
+  // modal auto focus
+  $(".modal").each(function () {
+    $(this).on("shown.bs.modal", function () {
+      console.log("shown");
+      $(this).find("[autofocus]").focus();
+    });
+  });
+
   // ajax login
   function ajaxLogin() {
     let formLogin = $("#FormLogin");
@@ -78,7 +86,7 @@ $(function () {
         success: function (data) {
           if (data.error) {
             errorLogin.html(data.error);
-          } else if (data.action && data.action === "refresh") {
+          } else if (data.action === "refresh") {
             location.reload();
           }
         },
@@ -89,6 +97,44 @@ $(function () {
     });
   }
   ajaxLogin();
+  // ajax register
+  function ajaxRegister() {
+    let formRegister = $("#FormRegister");
+    let errorRegister = $("#error-egister");
+    formRegister.submit((e) => {
+      e.preventDefault();
+      errorRegister.html("");
+      $("[id^=error-]").html("");
+      $("#success-register").html("");
+      let data = formRegister.serialize();
+      let url = formRegister.attr("action");
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        dataType: "json",
+        success: function (data) {
+          if (data.error) {
+            if (typeof data.error === "object") {
+              console.log("is object");
+             for (const err in data.error) {
+               console.log(err);
+               $("#error-" + err).html(data.error[err]);
+             }
+            }else{
+              $("#error-register").html(data.error);
+            }
+          } else {
+            $("#success-register").html(data.message);
+          }
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(thrownError);
+        },
+      });
+    });
+  }
+  ajaxRegister();
   // format number
   function formatNumberWithCommas() {
     $(".numberCommas").each(function () {

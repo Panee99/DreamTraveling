@@ -32,6 +32,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-toggle="modal" data-target="#ModalLogin">Login</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#ModalRegister">Register</a>
+                    </li>
                 </c:if>
                 <c:if test="${not empty sessionScope.user}">
                     <li class="nav-item">

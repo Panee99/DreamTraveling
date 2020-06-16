@@ -41,6 +41,10 @@
         <servlet-name>SearchHome</servlet-name>
         <servlet-class>oiog.dreamtraveling.controllers.SearchHomeTour</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RegisterController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.RegisterController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadHomeController</servlet-name>
         <url-pattern>/LoadHomeController</url-pattern>
@@ -56,6 +60,10 @@
     <servlet-mapping>
         <servlet-name>SearchHome</servlet-name>
         <url-pattern>/SearchHome</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterController</servlet-name>
+        <url-pattern>/RegisterController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

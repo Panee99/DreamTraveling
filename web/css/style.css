@@ -25,12 +25,13 @@ div.datedropper.m {
   background-color: initial;
 }
 #table-tour .td-img {
-  min-width: 330px;
+  width: 330px;
 }
 
 #table-tour .td-img .figure img,
 #table-tour .td-img .figure {
   margin-bottom: 0;
+  width: 100%;
 }
 
 #table-tour .td-date {
