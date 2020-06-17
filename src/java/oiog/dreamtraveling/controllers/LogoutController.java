@@ -21,7 +21,6 @@ public class LogoutController extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(LogoutController.class);
     private static final String ERROR_P = "error.jsp";
-    private static final String LOADHOME_C = "LoadHome";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,11 +34,12 @@ public class LogoutController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        final String HOME = request.getContextPath() + "/";
         String url = ERROR_P;
         try {
             HttpSession session = request.getSession();
             session.invalidate();
-            url = LOADHOME_C;
+            url = HOME;
         } catch (Exception e) {
             request.setAttribute("error", "Server error");
             LOGGER.error(e.getMessage());

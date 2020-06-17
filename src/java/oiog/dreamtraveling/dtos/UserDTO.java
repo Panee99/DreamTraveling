@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import oiog.dreamtraveling.daos.UserDAO;
 import org.apache.log4j.Logger;
 
 /**
@@ -25,12 +24,10 @@ public class UserDTO implements Serializable {
             = "^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶ"
             + "ẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợ"
             + "ụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s.]{3,30}$";
-    public static final String REGEX_EMAIL = "^[A-z0-9._%+-]+@[a-z.-]+\\.[a-z]{2,6}$";
     public static final String REGEX_PASSWORD = "^[A-z0-9]{6,30}$";
 
     public static final String WARNING_VALID_USERNAME = "Username must have between 5 and 20 characters";
     public static final String WARNING_VALID_FULLNAME = "Invalid Name";
-    public static final String WARNING_VALID_EMAIL = "invalid Email";
     public static final String WARNING_VALID_PASSWORD = "Password must have between 6 and 30 characters";
 
     private String username;

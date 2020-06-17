@@ -7,7 +7,6 @@ package oiog.dreamtraveling.daos;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.naming.NamingException;
@@ -61,10 +60,29 @@ public class UserDAO {
                     user.setRole(rs.getString("role"));
                 }
             }
-        } finally{
+        } finally {
             closeConn();
         }
         return user;
+    }
+
+    public boolean register(String username, String password, String name) throws SQLException, NamingException {
+        boolean created = false;
+        try {
+            conn = MyConnection.getConnection();
+            String sql = "{CALL CreateUser (?, ?, ?)}";
+            caStmt = conn.prepareCall(sql);
+            caStmt.setString(1, username);
+            caStmt.setString(2, password);
+            caStmt.setNString(3, name);
+            caStmt.execute();
+            if (caStmt.getUpdateCount() > 0) {
+                created = true;
+            }
+        } finally {
+            closeConn();
+        }
+        return created;
     }
 
 }

@@ -1,4 +1,4 @@
-USE master;
+﻿USE master;
 GO
 
 CREATE DATABASE DreamTraveling;
@@ -153,6 +153,10 @@ AS
 
 GO
 
+EXEC dbo.CreateUser @username = 'user', -- varchar(20)
+    @password = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', -- varchar(64)
+    @name = N'Nguyễn Minh Hoàng' -- nvarchar(30)
+
     
 CREATE PROC [dbo].[GetToursInfoForHome]
     @name AS NVARCHAR(20) ,
@@ -238,3 +242,5 @@ AS
         GROUP BY id;
     END;
 GO
+
+SELECT * FROM dbo.tblUser

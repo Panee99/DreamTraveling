@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import oiog.dreamtraveling.daos.TourDAO;
 import oiog.dreamtraveling.dtos.TourDTO;
+import oiog.dreamtraveling.utils.Tool;
 import org.apache.log4j.Logger;
 
 /**
@@ -44,30 +45,24 @@ public class LoadHomeController extends HttpServlet {
         try {
             /*=== get param ===*/
             String paramName = request.getParameter("name");
-            String paramFromDate = request.getParameter("fromDate");
-            String paramToDate = request.getParameter("toDate");
+            String paramDate = request.getParameter("dateRange");
             String paramPrice = request.getParameter("priceRange");
             String paramPage = request.getParameter("page");
             String paramRpp = getServletContext().getInitParameter("rpp_tour");  // rows per page
 
             /*=== convert data ===*/
  /*=== parse date ===*/
-            String dateFormat = getServletContext().getInitParameter("date_format");
-            if (dateFormat == null) {
-                dateFormat = "dd/MM/yyyy";
-            }
-            SimpleDateFormat dateFormater = new SimpleDateFormat(dateFormat);
+            SimpleDateFormat dateFormater = Tool.DATEFORMAT;
+
             Date fromDate = null;
             Date toDate = null;
-            if (paramFromDate != null && paramToDate != null) {
+            if (paramDate != null) {
                 try {
-                    java.util.Date utilFromDate = dateFormater.parse(paramFromDate);
-                    java.util.Date utilToDate = dateFormater.parse(paramToDate);
+                    String[] datePart = paramDate.split("-");
+                    java.util.Date utilFromDate = dateFormater.parse(datePart[0].trim());
+                    java.util.Date utilToDate = dateFormater.parse(datePart[1].trim());
                     fromDate = new Date(utilFromDate.getTime());
                     toDate = new Date(utilToDate.getTime());
-                    /*=== save date ===*/
-                    request.setAttribute("fromDate", fromDate);
-                    request.setAttribute("toDate", toDate);
                 } catch (ParseException e) {
                     fromDate = null;
                     toDate = null;

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,7 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import oiog.dreamtraveling.dtos.UserDTO;
 import org.apache.log4j.Logger;
@@ -30,6 +31,8 @@ public class MainController implements Filter {
     private static final Logger LOGGER = Logger.getLogger(MainController.class);
     private static final boolean debug = true;
     private static final String ERROR_P = "error.jsp";
+    private static final String ERROR401_P = "error-401.jsp";
+    private static Map<String, String> validRole = new HashMap();
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -104,21 +107,31 @@ public class MainController implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
+        request.setCharacterEncoding("UTF-8");
         HttpServletRequest req = (HttpServletRequest) request;
         String uri = req.getRequestURI();
         String url = ERROR_P;
-
         try {
-            boolean isHome = uri.endsWith("/");
-            if (isHome) {
-                url = "LoadHomeController";
-            } else if (uri.contains(".jsp") || uri.contains(".css") || uri.contains(".js") || uri.contains(".jpg") || uri.contains(".png") || uri.contains(".tff") || uri.contains(".woff") || uri.contains(".woff2")) {
+            if (uri.contains(".jsp") || uri.contains(".css") || uri.contains(".js") || uri.contains(".jpg") || uri.contains(".png") || uri.contains(".tff") || uri.contains(".woff") || uri.contains(".woff2")) {
                 chain.doFilter(request, response);
                 return;
             } else {
-                int lastIndex = uri.lastIndexOf("/");
-                String resource = uri.substring(lastIndex + 1);
-                url = resource.substring(0, 1).toUpperCase() + resource.substring(1) + "Controller";
+                String resource;
+                if (uri.endsWith("/")) {
+                    resource = "LoadHome";
+                } else if (uri.endsWith("/admin") || uri.endsWith("/admin/")) {
+                    resource = "LoadAdmin";
+                } else {
+                    int lastIndex = uri.lastIndexOf("/");
+                    resource = uri.substring(lastIndex + 1);
+                }
+                String requireRole = authenticate(resource, request);
+                if (requireRole == null) {
+                    url = resource.substring(0, 1).toUpperCase() + resource.substring(1) + "Controller";
+                } else {
+                    request.setAttribute("error", "Please login as [" + requireRole + "] to do this action");
+                    url = ERROR401_P;
+                }
             }
             request.getRequestDispatcher(url).forward(request, response);
         } catch (Exception e) {
@@ -127,12 +140,23 @@ public class MainController implements Filter {
         }
     }
 
-    private boolean logined(ServletRequest request, ServletResponse response) {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-        HttpSession session = req.getSession();
-        UserDTO user = (UserDTO) session.getAttribute("user");
-        return user != null;
+    /*=== Return reuired role to do the action ===*/
+    private String authenticate(String action, ServletRequest request) {
+        String requireRole = null;
+        if (validRole.containsKey(action)) {
+            requireRole = validRole.get(action);
+            HttpServletRequest req = (HttpServletRequest) request;
+            HttpSession session = req.getSession(false);
+            if (session != null) {
+                UserDTO user = (UserDTO) session.getAttribute("user");
+                if (user != null) {
+                    if (user.getRole().equals(requireRole)) {
+                        requireRole = null;
+                    }
+                }
+            }
+        }
+        return requireRole;
     }
 
     /**
@@ -167,6 +191,9 @@ public class MainController implements Filter {
                 log("MainController:Initializing filter");
             }
         }
+        /*=== config valid role ===*/
+        validRole.put("LoadAdmin", "admin");
+        validRole.put("AddTour", "admin");
     }
 
     /**
