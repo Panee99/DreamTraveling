@@ -2,16 +2,6 @@ body,
 html {
   background-color: #f4f4f4;
 }
-div.datedropper.m {
-  --dd-color1: #28a745;
-  --dd-color2: #fff;
-  --dd-color3: #4d4d4d;
-  --dd-color4: #fff;
-
-  --dd-radius: 8px;
-  --dd-width: 180px;
-  --dd-shadow: 0 0 32px 0px rgba(0, 0, 0, 0.1);
-}
 .slider-container .back-bar .pointer-label {
   font-size: 1.5rem;
 }
@@ -87,4 +77,10 @@ div.datedropper.m {
 #error-page #error {
   color: #fff;
   text-shadow: 0 0 80px #ffffff, 0 0 30px #008000, 0 0 6px #0000ff;
+}
+/* date picker */
+.form-control-lg.date-picker-couple,
+.form-control.date-picker-couple{
+  width:190px;
+  text-align: center;
 }

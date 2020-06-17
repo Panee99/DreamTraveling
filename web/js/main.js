@@ -7,22 +7,38 @@ $(function () {
       let yyyy = this.date.getFullYear();
       return dd + "/" + mm + "/" + yyyy;
     },
-    add: function (days) {
-      this.date.setDate(this.date.getDate() + days);
-      return this;
-    },
-    minus: function (days) {
-      this.date.setDate(this.date.getDate() - days);
-      return this;
-    },
+    // ,
+    // add: function (days) {
+    //   this.date.setDate(this.date.getDate() + days);
+    //   return this;
+    // },
+    // minus: function (days) {
+    //   this.date.setDate(this.date.getDate() - days);
+    //   return this;
+    // },
   };
-  // init datedropper
-  $(".date-dropper-check-in-out").dateDropper({
-    format: "d/m/Y",
-    largeOnly: true,
-    lock: "from",
-    theme: "m",
-    defaultDate: null,
+  // init date picker
+  $(".date-picker-couple").daterangepicker({
+    showDropdowns: true,
+    autoUpdateInput: false,
+    locale: {
+      format: "DD/MM/YYYY",
+      applyLabel: "OK",
+      cancelLabel: "Clear",
+    },
+    minDate: currentDate.toString(),
+    opens: "center",
+  });
+  $(".date-picker-couple").on("apply.daterangepicker", function (ev, picker) {
+    $(this).val(
+      picker.startDate.format("DD/MM/YYYY") +
+        " - " +
+        picker.endDate.format("DD/MM/YYYY")
+    );
+  });
+
+  $(".date-picker-couple").on("cancel.daterangepicker", function (ev, picker) {
+    $(this).val("");
   });
   // init range slider
   $(".range-slider").jRange({
@@ -39,7 +55,14 @@ $(function () {
     showLabels: true,
     isRange: true,
   });
-  $(".range-slider").jRange("setValue", "0,10000000");
+  $(".range-slider").each(function(){
+    let value = $(this).data("value");
+    if(value && value.length > 0){
+      $(this).jRange("setValue", value);
+    }else{
+      $(this).jRange("setValue", "0,10000000");
+    }
+  })
   // modal animate
   $(".modal").each(function () {
     $(this).on("show.bs.modal", function () {
@@ -117,11 +140,11 @@ $(function () {
           if (data.error) {
             if (typeof data.error === "object") {
               console.log("is object");
-             for (const err in data.error) {
-               console.log(err);
-               $("#error-" + err).html(data.error[err]);
-             }
-            }else{
+              for (const err in data.error) {
+                console.log(err);
+                $("#error-" + err).html(data.error[err]);
+              }
+            } else {
               $("#error-register").html(data.error);
             }
           } else {

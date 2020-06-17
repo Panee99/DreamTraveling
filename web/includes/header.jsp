@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/X-editable/dist/bootstrap4-editable/css/bootstrap-editable.css">
     <!-- Jquery-range -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/jquery-range/jquery.range.css">
+     <!-- Date Range Picker -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/daterangepicker/daterangepicker.css">
      <!-- Animate Css -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/animate.css/animate.min.css">
     <!-- Main style -->

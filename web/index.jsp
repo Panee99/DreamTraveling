@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="title" scope="page" value="${initParam.web_name}"/>
+<c:set var="title" scope="page" value="${initParam.web_name}" />
 
 <%@include file="/includes/header.jsp" %>
 
@@ -15,19 +15,15 @@
     <section class="search-tour mb-5">
         <form class="form-inline justify-content-end mb-5" action="LoadHome" method="POST">
             <div class="form-group mr-2">
-                <input type="text" class="date-dropper-check-in-out form-control" data-dd-roundtrip="my-trip" placeholder="From" name="fromDate" data-dd-default-date="<fmt:formatDate value="${requestScope.fromDate}" pattern="MM/dd/yyyy"/>">
-            </div>
-            <span class="mr-2">-</span>
-            <div class="form-group mr-2">
-                <input type="text" class="date-dropper-check-in-out form-control" data-dd-roundtrip="my-trip" placeholder="To" name="toDate" data-dd-default-date="<fmt:formatDate value="${requestScope.toDate}" pattern="MM/dd/yyyy"/>">
+                <input type="text" class="form-control date-picker-couple" placeholder="From - To" value="${param.dateRange}" name="dateRange">
             </div>
             <div class="form-group mr-2">
-                <input type="text" class="form-control" name="name" placeholder="Name">
+                <input type="text" class="form-control" name="name" placeholder="Name" value="${param.name}">
             </div>
             <button type="submit" class="btn btn-primary">Search</button>
             <div class="form-group justify-content-end w-100 mt-5 pr-5">
                 <label class="mr-5">Price:</label>
-                <input type="hidden" class="range-slider" value="23" name="priceRange"/>
+                    <input type="hidden" class="range-slider" name="priceRange" data-value="${param.priceRange}"/>
             </div>
         </form>
     </section>
@@ -42,7 +38,9 @@
                         <img src="${tour.value.image}" alt="${tour.value.name}">
                         <div class="card-body">
                             <h5 class="card-title">${tour.value.name}</h5>
-                            <div class="small mb-4"><span><fmt:formatDate value="${tour.value.fromDate}" pattern="dd/MM/yyyy"/></span> - <span><fmt:formatDate value="${tour.value.toDate}" pattern="dd/MM/yyyy"/></span></div>
+                            <div class="small mb-4"><span>
+                                    <fmt:formatDate value="${tour.value.fromDate}" pattern="dd/MM/yyyy" /></span> - <span>
+                                    <fmt:formatDate value="${tour.value.toDate}" pattern="dd/MM/yyyy" /></span></div>
                             <p>${tour.value.review}</p>
                             <button class="btn btn-success w-100 mt-3">Book This Tour</button>
                         </div>
