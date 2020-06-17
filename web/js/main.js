@@ -109,8 +109,8 @@ $(function () {
         success: function (data) {
           if (data.error) {
             errorLogin.html(data.error);
-          } else if (data.action === "refresh") {
-            location.reload();
+          } else if (data.redirect) {
+            window.location.replace(data.redirect);
           }
         },
         error: function (xhr, ajaxOptions, thrownError) {
