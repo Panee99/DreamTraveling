@@ -76,6 +76,21 @@ ALTER TABLE dbo.tblBooking ADD FOREIGN KEY (disCountCode) REFERENCES dbo.tblDisc
 
 GO
 
+-- INSERT admin
+INSERT INTO dbo.tblUser
+        ( username ,
+          password ,
+          name ,
+          role ,
+          status
+        )
+VALUES  ( 'admin' , -- username - varchar(20)
+          '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' , -- password - varchar(64)
+          N'Siêu admin' , -- name - nvarchar(30)
+          'admin' , -- role - varchar(10)
+          'active'  -- status - varchar(10)
+        )
+
 -- PROC
 ---- Tour
 CREATE PROC [dbo].[AddTour]
@@ -156,7 +171,7 @@ GO
 EXEC dbo.CreateUser @username = 'user', -- varchar(20)
     @password = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', -- varchar(64)
     @name = N'Nguyễn Minh Hoàng' -- nvarchar(30)
-
+GO 
     
 CREATE PROC [dbo].[GetToursInfoForHome]
     @name AS NVARCHAR(20) ,
@@ -243,4 +258,3 @@ AS
     END;
 GO
 
-SELECT * FROM dbo.tblUser

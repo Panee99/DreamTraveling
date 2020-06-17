@@ -45,6 +45,10 @@
         <servlet-name>AuthenticateController</servlet-name>
         <servlet-class>oiog.dreamtraveling.controllers.AuthenticateController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoadAdminController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.LoadAdminController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadHomeController</servlet-name>
         <url-pattern>/LoadHomeController</url-pattern>
@@ -68,6 +72,10 @@
     <servlet-mapping>
         <servlet-name>AuthenticateController</servlet-name>
         <url-pattern>/AuthenticateController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadAdminController</servlet-name>
+        <url-pattern>/LoadAdminController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

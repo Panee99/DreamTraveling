@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -32,7 +35,7 @@ public class MainController implements Filter {
     private static final boolean debug = true;
     private static final String ERROR_P = "error.jsp";
     private static final String ERROR401_P = "error-401.jsp";
-    private static Map<String, String> validRole = new HashMap();
+    private static Map<String, List<String>> validRole = new HashMap();
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -111,25 +114,32 @@ public class MainController implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         String uri = req.getRequestURI();
         String url = ERROR_P;
+        HttpSession session = ((HttpServletRequest) request).getSession();
+        UserDTO user = (UserDTO) session.getAttribute("user");
         try {
             if (uri.contains(".jsp") || uri.contains(".css") || uri.contains(".js") || uri.contains(".jpg") || uri.contains(".png") || uri.contains(".tff") || uri.contains(".woff") || uri.contains(".woff2")) {
                 chain.doFilter(request, response);
                 return;
             } else {
                 String resource;
-                if (uri.endsWith("/")) {
+                if (uri.endsWith("/") && !uri.endsWith("/admin/")) {
                     resource = "LoadHome";
+                    if (user != null) {
+                        if ("admin".equals(user.getRole())) {
+                            resource = "LoadAdmin";
+                        }
+                    }
                 } else if (uri.endsWith("/admin") || uri.endsWith("/admin/")) {
                     resource = "LoadAdmin";
                 } else {
                     int lastIndex = uri.lastIndexOf("/");
                     resource = uri.substring(lastIndex + 1);
                 }
-                String requireRole = authenticate(resource, request);
+                List<String> requireRole = authenticate(resource, user);
                 if (requireRole == null) {
                     url = resource.substring(0, 1).toUpperCase() + resource.substring(1) + "Controller";
                 } else {
-                    request.setAttribute("error", "Please login as [" + requireRole + "] to do this action");
+                    request.setAttribute("error", "Please login as [" + requireRole.get(0) + "] to do this action");
                     url = ERROR401_P;
                 }
             }
@@ -141,18 +151,17 @@ public class MainController implements Filter {
     }
 
     /*=== Return reuired role to do the action ===*/
-    private String authenticate(String action, ServletRequest request) {
-        String requireRole = null;
+    private List<String> authenticate(String action, UserDTO user) {
+        List<String> requireRole = null;
         if (validRole.containsKey(action)) {
             requireRole = validRole.get(action);
-            HttpServletRequest req = (HttpServletRequest) request;
-            HttpSession session = req.getSession(false);
-            if (session != null) {
-                UserDTO user = (UserDTO) session.getAttribute("user");
-                if (user != null) {
-                    if (user.getRole().equals(requireRole)) {
-                        requireRole = null;
-                    }
+            if (user != null) {
+                if (requireRole.contains(user.getRole())) {
+                    requireRole = null;
+                }
+            } else {
+                if (requireRole.contains(null)) {
+                    requireRole = null;
                 }
             }
         }
@@ -192,8 +201,9 @@ public class MainController implements Filter {
             }
         }
         /*=== config valid role ===*/
-        validRole.put("LoadAdmin", "admin");
-        validRole.put("AddTour", "admin");
+        validRole.put("LoadAdmin", new ArrayList(Arrays.asList("admin")));
+        validRole.put("AddTour", new ArrayList(Arrays.asList("admin")));
+        validRole.put("LoadHome", new ArrayList(Arrays.asList("user", null)));
     }
 
     /**
