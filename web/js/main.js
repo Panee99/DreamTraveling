@@ -55,14 +55,14 @@ $(function () {
     showLabels: true,
     isRange: true,
   });
-  $(".range-slider").each(function(){
+  $(".range-slider").each(function () {
     let value = $(this).data("value");
-    if(value && value.length > 0){
+    if (value && value.length > 0) {
       $(this).jRange("setValue", value);
-    }else{
+    } else {
       $(this).jRange("setValue", "0,10000000");
     }
-  })
+  });
   // modal animate
   $(".modal").each(function () {
     $(this).on("show.bs.modal", function () {
@@ -169,4 +169,29 @@ $(function () {
     });
   }
   formatNumberWithCommas();
+  // form
+  $("input").attr("autocomplete", "off");
+  // upload image
+  $("#fileTourImage").on("change", function () {
+    console.log("changed");
+    let input = this;
+    if (input.files.length > 0) {
+      let file = input.files[0];
+      let fileType = file["type"];
+      let validImageTypes = ["image/jpeg", "image/png"];
+      if ($.inArray(fileType, validImageTypes) < 0) {
+        alert("please upload image jpg or png");
+        return;
+      }
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        console.log("updated");
+        console.log("e.target.result :>> ", e.target.result);
+        $("#fileTourImageDemo").css({
+          "background-image": `url(${e.target.result})`,
+        });
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  });
 });

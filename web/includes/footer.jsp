@@ -17,6 +17,8 @@
 <script src="${pageContext.request.contextPath}/node_modules/daterangepicker/daterangepicker.js"></script>
 <!-- Jquery-range -->
 <script src="${pageContext.request.contextPath}/node_modules/jquery-range/jquery.range-min.js"></script>
+<!-- Cropper JS -->
+<script src="${pageContext.request.contextPath}/node_modules/cropperjs/dist/cropper.min.js"></script>
 <!-- Main js -->
 <script src="${pageContext.request.contextPath}/js/main.js"></script>
 </body>

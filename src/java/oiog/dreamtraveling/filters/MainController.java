@@ -117,7 +117,7 @@ public class MainController implements Filter {
         HttpSession session = ((HttpServletRequest) request).getSession();
         UserDTO user = (UserDTO) session.getAttribute("user");
         try {
-            if (uri.contains(".jsp") || uri.contains(".css") || uri.contains(".js") || uri.contains(".jpg") || uri.contains(".png") || uri.contains(".tff") || uri.contains(".woff") || uri.contains(".woff2")) {
+            if (uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".tff") || uri.endsWith(".woff") || uri.endsWith(".woff2") || uri.endsWith(".map")) {
                 chain.doFilter(request, response);
                 return;
             } else {
@@ -147,6 +147,7 @@ public class MainController implements Filter {
         } catch (Exception e) {
             request.setAttribute("ERROR", "Server error. Please check log file for more infomation");
             LOGGER.error(e.getMessage());
+            request.getRequestDispatcher(url).forward(request, response);
         }
     }
 
@@ -203,6 +204,7 @@ public class MainController implements Filter {
         /*=== config valid role ===*/
         validRole.put("LoadAdmin", new ArrayList(Arrays.asList("admin")));
         validRole.put("AddTour", new ArrayList(Arrays.asList("admin")));
+        validRole.put("NewTour", new ArrayList(Arrays.asList("admin")));
         validRole.put("LoadHome", new ArrayList(Arrays.asList("user", null)));
     }
 

@@ -2,6 +2,9 @@ body,
 html {
   background-color: #f4f4f4;
 }
+.form-control-lg {
+  border-width: 1px;
+}
 .slider-container .back-bar .pointer-label {
   font-size: 1.5rem;
 }
@@ -54,7 +57,7 @@ html {
   transition-timing-function: ease;
 }
 /* error page */
-#error-page{
+#error-page {
   background-color: #000000;
   height: 100%;
   width: 100%;
@@ -80,7 +83,22 @@ html {
 }
 /* date picker */
 .form-control-lg.date-picker-couple,
-.form-control.date-picker-couple{
-  width:190px;
+.form-control.date-picker-couple {
+  width: 190px;
   text-align: center;
+}
+/* search tour */
+section.search-tour {
+  margin-bottom: 60px;
+}
+/* upload tour image */
+#fileTourImageDemo{
+  height: 240px;
+  width: 320px;
+  display: block;
+  cursor: pointer;
+  background-size: cover;
+}
+#fileTourImageDemo input[type=file]{
+  display: none;
 }

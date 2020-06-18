@@ -12,15 +12,12 @@ import java.sql.SQLException;
 import javax.naming.NamingException;
 import oiog.dreamtraveling.dtos.UserDTO;
 import oiog.dreamtraveling.utils.MyConnection;
-import org.apache.log4j.Logger;
 
 /**
  *
  * @author hoang
  */
 public class UserDAO {
-
-    private static final Logger LOGGER = Logger.getLogger(UserDAO.class);
 
     private Connection conn;
     private CallableStatement caStmt;

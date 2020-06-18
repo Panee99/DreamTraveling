@@ -87,23 +87,30 @@ public class LoadHomeController extends HttpServlet {
             /*=== parse pagination ===*/
             int page = 1;
             int rpp = 5;
-            if (paramPage != null && paramRpp != null) {
+            if (paramPage != null) {
                 try {
                     page = Integer.parseInt(paramPage);
-                    rpp = Integer.parseInt(paramRpp);
                 } catch (NumberFormatException e) {
                     page = 1;
+                }
+            }
+            if (paramRpp != null) {
+                try {
+                    rpp = Integer.parseInt(paramRpp);
+                } catch (NumberFormatException e) {
                     rpp = 5;
                 }
             }
+            
+            /*=== get data ===*/
             TourDAO dao = new TourDAO();
-            int totalResult = dao.getTourInfoForHomePageLength(paramName, fromDate, toDate, fromPrice, toPrice);
+            int totalResult = dao.getTourInfoForHomePageLength(paramName, fromDate, toDate, fromPrice, toPrice, 1);// last number 1 mean quantity >= 1
             int totalPage = ((Double) Math.ceil((float) totalResult / rpp)).intValue();
             request.setAttribute("total_page", totalPage);
             request.setAttribute("page", page);
 
             /*=== get data ===*/
-            Map< Integer, TourDTO> listTour = dao.getTourInfoForHomePage(paramName, fromDate, toDate, fromPrice, toPrice, page, rpp);
+            Map< Integer, TourDTO> listTour = dao.getTourInfoForHomePage(paramName, fromDate, toDate, fromPrice, toPrice, 1, page, rpp);
             request.setAttribute("list_tour", listTour);
             url = HOME_P;
 

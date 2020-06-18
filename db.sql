@@ -37,9 +37,10 @@ CREATE TABLE tblBooking
     (
       id INT IDENTITY(1, 1)
              PRIMARY KEY ,
-      userId VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES dbo.tblUser(username),
+      userId VARCHAR(20) NOT NULL
+                         FOREIGN KEY REFERENCES dbo.tblUser ( username ) ,
       dateOrder DATE NOT NULL ,
-      disCountCode VARCHAR(20),
+      disCountCode VARCHAR(20) ,
       totalPrice FLOAT NOT NULL ,
       status VARCHAR(10) NOT NULL
     );
@@ -64,20 +65,22 @@ GO
 
 CREATE TABLE tblUserUsedDiscount
     (
-      userId VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES dbo.tblUser(username) ,
-      discountCode VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES dbo.tblDiscount(code),
+      userId VARCHAR(20) NOT NULL
+                         FOREIGN KEY REFERENCES dbo.tblUser ( username ) ,
+      discountCode VARCHAR(20) NOT NULL
+                               FOREIGN KEY REFERENCES dbo.tblDiscount ( code ) ,
       UNIQUE ( userId, discountCode )
     );
 GO
 
 -- foreign key
-ALTER TABLE dbo.tblBooking ADD FOREIGN KEY (disCountCode) REFERENCES dbo.tblDiscount(code)
+ALTER TABLE dbo.tblBooking ADD FOREIGN KEY (disCountCode) REFERENCES dbo.tblDiscount(code);
 
 
 GO
 
 -- INSERT admin
-INSERT INTO dbo.tblUser
+INSERT  INTO dbo.tblUser
         ( username ,
           password ,
           name ,
@@ -89,8 +92,10 @@ VALUES  ( 'admin' , -- username - varchar(20)
           N'Siêu admin' , -- name - nvarchar(30)
           'admin' , -- role - varchar(10)
           'active'  -- status - varchar(10)
-        )
-
+        );
+		
+GO
+        
 -- PROC
 ---- Tour
 CREATE PROC [dbo].[AddTour]
@@ -170,7 +175,8 @@ GO
 
 EXEC dbo.CreateUser @username = 'user', -- varchar(20)
     @password = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b', -- varchar(64)
-    @name = N'Nguyễn Minh Hoàng' -- nvarchar(30)
+    @name = N'Nguyễn Minh Hoàng';
+ -- nvarchar(30)
 GO 
     
 CREATE PROC [dbo].[GetToursInfoForHome]
@@ -179,6 +185,7 @@ CREATE PROC [dbo].[GetToursInfoForHome]
     @toDate AS DATE ,
     @fromPrice AS INT ,
     @toPrice AS INT ,
+    @minQuantity AS INT ,
     @page AS INT ,
     @rpp AS INT
 AS
@@ -205,42 +212,24 @@ AS
                       OR price >= @fromPrice
                       AND price <= @toPrice
                     )
+                AND quantity >= @minQuantity
+                 AND fromDate >=  CASt (CURRENT_TIMESTAMP  AS DATE )
         ORDER BY dateImport
                 OFFSET ( ( @page - 1 ) * @rpp ) ROWS FETCH NEXT @rpp ROW ONLY;
     END;
 GO
-
-/*
-EXEC dbo.AddTour @name = N'Test1', -- nvarchar(20)
-    @review = N'Review Test 1', -- ntext
-    @price = 5000000, -- int
-    @quantity = 10, -- int
-    @image = 'https://loremflickr.com/cache/resized/582_23430110970_821b461680_320_240_nofilter.jpg', -- varchar(255)
-    @fromDate = '2020-06-14', -- date
-    @toDate = '2020-06-24';
- -- date
-GO
-EXEC dbo.AddTour @name = N'Test2', -- nvarchar(20)
-    @review = N'Review Test 2', -- ntext
-    @price = 7000000, -- int
-    @quantity = 10, -- int
-    @image = 'https://loremflickr.com/cache/resized/65535_49927120598_d9de86b89a_320_240_nofilter.jpg', -- varchar(255)
-    @fromDate = '2020-06-14', -- date
-    @toDate = '2020-06-24';
- -- date
-GO
-*/
 
 CREATE PROC [dbo].[GetToursInfoForHomeLength]
     @name AS NVARCHAR(20) ,
     @fromDate AS DATE ,
     @toDate AS DATE ,
     @fromPrice AS INT ,
-    @toPrice AS INT
+    @toPrice AS INT ,
+    @minQuantity AS INT
 AS
     BEGIN
 	-- get number of result
-        SELECT  COUNT(id) AS length
+        SELECT  COUNT(*) AS length
         FROM    dbo.tblTour
         WHERE   status = 'active'
                 AND ( @name IS NULL
@@ -254,7 +243,26 @@ AS
                       OR price >= @fromPrice
                       AND price <= @toPrice
                     )
-        GROUP BY id;
+                AND quantity >= @minQuantity
+                AND fromDate >=  CASt (CURRENT_TIMESTAMP  AS DATE )
     END;
 GO
 
+EXEC dbo.GetToursInfoForHomeLength @name = '', -- nvarchar(20)
+    @fromDate = null, -- date
+    @toDate = null, -- date
+    @fromPrice = null, -- int
+    @toPrice = null, -- int
+    @minQuantity = 0 -- int
+
+	SELECT * FROM dbo.tblTour
+
+	EXEC dbo.GetToursInfoForHome @name = '', -- nvarchar(20)
+	    @fromDate = null, -- date
+	    @toDate = null, -- date
+	    @fromPrice = null, -- int
+	    @toPrice = null, -- int
+	    @minQuantity = 0, -- int
+	    @page = 1, -- int
+	    @rpp = 9 -- int
+	

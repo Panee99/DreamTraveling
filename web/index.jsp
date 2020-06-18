@@ -12,8 +12,8 @@
 <!-- container -->
 <div class="container">
     <!-- search -->
-    <section class="search-tour mb-5">
-        <form class="form-inline justify-content-end mb-5" action="LoadHome" method="POST">
+    <section class="search-tour">
+        <form class="form-inline justify-content-end" action="LoadHome" method="POST">
             <div class="form-group mr-2">
                 <input type="text" class="form-control date-picker-couple" placeholder="From - To" value="${param.dateRange}" name="dateRange">
             </div>
@@ -23,7 +23,7 @@
             <button type="submit" class="btn btn-primary">Search</button>
             <div class="form-group justify-content-end w-100 mt-5 pr-5">
                 <label class="mr-5">Price:</label>
-                    <input type="hidden" class="range-slider" name="priceRange" data-value="${param.priceRange}"/>
+                <input type="hidden" class="range-slider" name="priceRange" data-value="${param.priceRange}"/>
             </div>
         </form>
     </section>
@@ -66,6 +66,7 @@
             <ul class="pagination justify-content-end">
                 <c:forEach var="page" begin="1" end="${requestScope.total_page}" step="1">
                     <form action="LoadHome" method="POST">
+                        <input type="hidden" name="page" value="${page}">
                         <c:if test="${page eq requestScope.page}">
                             <div class="page-item active">
                                 <button class="page-link" type="button">${page}</button>

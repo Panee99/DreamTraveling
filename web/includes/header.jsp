@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/daterangepicker/daterangepicker.css">
      <!-- Animate Css -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/animate.css/animate.min.css">
+     <!-- Cropper JS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/cropperjs/dist/cropper.min.css">
     <!-- Main style -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
