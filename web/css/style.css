@@ -38,6 +38,7 @@ html {
 #table-tour .td-name {
   width: 300px;
   text-align: left;
+  text-transform: capitalize;
 }
 #table-tour .td-action {
   width: 200px;
@@ -82,8 +83,10 @@ html {
   text-shadow: 0 0 80px #ffffff, 0 0 30px #008000, 0 0 6px #0000ff;
 }
 /* date picker */
-.form-control-lg.date-picker-couple,
-.form-control.date-picker-couple {
+.form-control-lg.admin-date-picker-couple,
+.form-control.admin-date-picker-couple,
+.form-control-lg.user-date-picker-couple,
+.form-control.user-date-picker-couple {
   width: 190px;
   text-align: center;
 }
@@ -92,13 +95,28 @@ section.search-tour {
   margin-bottom: 60px;
 }
 /* upload tour image */
-#fileTourImageDemo{
+.figure{
+  margin-bottom: 0px;
+}
+.tour-image{
   height: 240px;
   width: 320px;
   display: block;
-  cursor: pointer;
   background-size: cover;
+  margin: auto;
 }
-#fileTourImageDemo input[type=file]{
+.tour-image input[type=file]{
   display: none;
+}
+
+.list-card .card img{
+  height: 240px;
+  width: 320px;
+}
+#fileTourImageDemo{
+  cursor: pointer;
+}
+
+.numberCommas{
+  white-space: nowrap;
 }

@@ -53,6 +53,10 @@
         <servlet-name>UpdateTourController</servlet-name>
         <servlet-class>oiog.dreamtraveling.controllers.UpdateTourController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeactiveTourController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.DeactiveTourController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadHomeController</servlet-name>
         <url-pattern>/LoadHomeController</url-pattern>
@@ -84,6 +88,10 @@
     <servlet-mapping>
         <servlet-name>UpdateTourController</servlet-name>
         <url-pattern>/UpdateTourController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeactiveTourController</servlet-name>
+        <url-pattern>/DeactiveTourController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

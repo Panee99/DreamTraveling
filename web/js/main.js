@@ -18,7 +18,7 @@ $(function () {
     // },
   };
   // init date picker
-  $(".date-picker-couple").daterangepicker({
+  $(".user-date-picker-couple").daterangepicker({
     showDropdowns: true,
     autoUpdateInput: false,
     locale: {
@@ -29,7 +29,7 @@ $(function () {
     minDate: currentDate.toString(),
     opens: "center",
   });
-  $(".date-picker-couple").on("apply.daterangepicker", function (ev, picker) {
+  $(".user-date-picker-couple").on("apply.daterangepicker", function (ev, picker) {
     $(this).val(
       picker.startDate.format("DD/MM/YYYY") +
         " - " +
@@ -37,7 +37,28 @@ $(function () {
     );
   });
 
-  $(".date-picker-couple").on("cancel.daterangepicker", function (ev, picker) {
+  $(".user-date-picker-couple").on("cancel.daterangepicker", function (ev, picker) {
+    $(this).val("");
+  });
+  $(".admin-date-picker-couple").daterangepicker({
+    showDropdowns: true,
+    autoUpdateInput: false,
+    locale: {
+      format: "DD/MM/YYYY",
+      applyLabel: "OK",
+      cancelLabel: "Clear",
+    },
+    opens: "center",
+  });
+  $(".admin-date-picker-couple").on("apply.daterangepicker", function (ev, picker) {
+    $(this).val(
+      picker.startDate.format("DD/MM/YYYY") +
+        " - " +
+        picker.endDate.format("DD/MM/YYYY")
+    );
+  });
+
+  $(".admin-date-picker-couple").on("cancel.daterangepicker", function (ev, picker) {
     $(this).val("");
   });
   // init range slider

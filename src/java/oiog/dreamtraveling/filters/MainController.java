@@ -134,6 +134,7 @@ public class MainController implements Filter {
                 } else {
                     int lastIndex = uri.lastIndexOf("/");
                     resource = uri.substring(lastIndex + 1);
+                    resource = resource.split("\\?")[0];
                 }
                 List<String> requireRole = authenticate(resource, user);
                 if (requireRole == null) {
@@ -145,7 +146,8 @@ public class MainController implements Filter {
             }
             request.getRequestDispatcher(url).forward(request, response);
         } catch (Exception e) {
-            request.setAttribute("ERROR", "Server error. Please check log file for more infomation");
+            url = "error.jsp";
+            request.setAttribute("error", "Server error. Please check log file for more infomation");
             LOGGER.error(e.getMessage());
             request.getRequestDispatcher(url).forward(request, response);
         }
@@ -205,6 +207,8 @@ public class MainController implements Filter {
         validRole.put("LoadAdmin", new ArrayList(Arrays.asList("admin")));
         validRole.put("AddTour", new ArrayList(Arrays.asList("admin")));
         validRole.put("NewTour", new ArrayList(Arrays.asList("admin")));
+        validRole.put("UpdateTour", new ArrayList(Arrays.asList("admin")));
+        validRole.put("DeactiveTour", new ArrayList(Arrays.asList("admin")));
         validRole.put("LoadHome", new ArrayList(Arrays.asList("user", null)));
     }
 

@@ -5,6 +5,9 @@
  */
 package oiog.dreamtraveling.daos;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -15,12 +18,15 @@ import java.util.Map;
 import javax.naming.NamingException;
 import oiog.dreamtraveling.dtos.TourDTO;
 import oiog.dreamtraveling.utils.MyConnection;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author hoang
  */
 public class TourDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(TourDAO.class);
 
     private Connection conn;
     private CallableStatement caStmt;
@@ -41,11 +47,11 @@ public class TourDAO {
         }
     }
 
-    public int getTourInfoForHomePageLength(String name, Date fromDate, Date toDate, Integer fromPrice, Integer toPrice, int minQuantity) throws SQLException, NamingException {
+    public int getTourInfoForHomePageLength(String name, Date fromDate, Date toDate, Integer fromPrice, Integer toPrice, int minQuantity, boolean fromNowOn) throws SQLException, NamingException {
         int result = 0;
         try {
             conn = MyConnection.getConnection();
-            String sql = "{CALL GetToursInfoForHomeLength (?, ?, ?, ?, ?, ?)}";
+            String sql = "{CALL GetToursInfoForHomeLength (?, ?, ?, ?, ?, ?, ?)}";
             caStmt = conn.prepareCall(sql);
             caStmt.setNString(1, name);
             caStmt.setDate(2, fromDate);
@@ -53,6 +59,7 @@ public class TourDAO {
             caStmt.setObject(4, fromPrice, java.sql.Types.INTEGER);
             caStmt.setObject(5, toPrice, java.sql.Types.INTEGER);
             caStmt.setInt(6, minQuantity);
+            caStmt.setBoolean(7, fromNowOn);
             boolean hasResultSet = caStmt.execute();
             if (hasResultSet) {
                 rs = caStmt.getResultSet();
@@ -66,11 +73,11 @@ public class TourDAO {
         return result;
     }
 
-    public Map<Integer, TourDTO> getTourInfoForHomePage(String name, Date fromDate, Date toDate, Integer fromPrice, Integer toPrice, int minQuantity, int page, int rpp) throws SQLException, NamingException {
+    public Map<Integer, TourDTO> getTourInfoForHomePage(String name, Date fromDate, Date toDate, Integer fromPrice, Integer toPrice, int minQuantity, boolean fromNowOn, int page, int rpp) throws SQLException, NamingException {
         Map<Integer, TourDTO> listTour = new HashMap();
         try {
             conn = MyConnection.getConnection();
-            String sql = "{CALL GetToursInfoForHome (?, ?, ?, ?, ?, ?, ?, ?)}";
+            String sql = "{CALL GetToursInfoForHome (?, ?, ?, ?, ?, ?, ?, ?, ?)}";
             caStmt = conn.prepareCall(sql);
             caStmt.setNString(1, name);
             caStmt.setDate(2, fromDate);
@@ -78,8 +85,9 @@ public class TourDAO {
             caStmt.setObject(4, fromPrice, java.sql.Types.INTEGER);
             caStmt.setObject(5, toPrice, java.sql.Types.INTEGER);
             caStmt.setInt(6, minQuantity);
-            caStmt.setObject(7, page, java.sql.Types.INTEGER);
-            caStmt.setObject(8, rpp, java.sql.Types.INTEGER);
+            caStmt.setBoolean(7, fromNowOn);
+            caStmt.setObject(8, page, java.sql.Types.INTEGER);
+            caStmt.setObject(9, rpp, java.sql.Types.INTEGER);
             boolean hasResultSet = caStmt.execute();
             if (hasResultSet) {
                 rs = caStmt.getResultSet();
@@ -121,5 +129,98 @@ public class TourDAO {
             closeConn();
         }
         return created;
+    }
+
+    public TourDTO getTourByID(int id) throws SQLException, NamingException {
+        TourDTO tour = null;
+        try {
+            conn = MyConnection.getConnection();
+            String sql = "{CALL GetTourByID (?)}";
+            caStmt = conn.prepareCall(sql);
+            caStmt.setInt(1, id);
+            boolean hasResultSet = caStmt.execute();
+            if (hasResultSet) {
+                rs = caStmt.getResultSet();
+                if (rs.next()) {
+                    tour = new TourDTO();
+                    tour.setId(rs.getInt("id"));
+                    tour.setName(rs.getNString("name"));
+                    tour.setReview(rs.getNString("review"));
+                    tour.setFromDate(rs.getDate("fromDate"));
+                    tour.setToDate(rs.getDate("toDate"));
+                    tour.setPrice(rs.getInt("price"));
+                    tour.setQuantity(rs.getInt("quantity"));
+                    tour.setImage(rs.getString("image"));
+                }
+            }
+        } finally {
+            closeConn();
+        }
+        return tour;
+    }
+
+    public boolean deactiveTourByID(int id) throws SQLException, NamingException {
+        boolean deactived = false;
+        try {
+            conn = MyConnection.getConnection();
+            String sql = "{CALL DeactiveTourByID (?)}";
+            caStmt = conn.prepareCall(sql);
+            caStmt.setInt(1, id);
+            caStmt.execute();
+            deactived = caStmt.getUpdateCount() > 0;
+        } finally {
+            closeConn();
+        }
+        return deactived;
+    }
+
+    public boolean deleteImageByID(int id) throws SQLException, NamingException {
+        boolean deleted = false;
+        try {
+            conn = MyConnection.getConnection();
+            String sql = "{CALL getImageOfTour (?)}";
+            caStmt = conn.prepareCall(sql);
+            caStmt.setInt(1, id);
+            boolean hasRsSet = caStmt.execute();
+            if (hasRsSet) {
+                rs = caStmt.getResultSet();
+                if (rs.next()) {
+                    String imgPath = rs.getString("image");
+                    deleted = deleteImage(imgPath);
+                }
+            }
+        } catch (IOException ex) {
+            LOGGER.error("One tour had invalid image");
+        } finally {
+            closeConn();
+        }
+        return deleted;
+    }
+
+    private boolean deleteImage(String filePath) throws IOException {
+        File file = new File(filePath);
+        return Files.deleteIfExists(file.toPath());
+    }
+
+    public boolean updateTour(int id, String name, String review, int price, int quantity, String image, Date fromDate, Date toDate) throws SQLException, NamingException {
+        boolean updated = false;
+        try {
+            conn = MyConnection.getConnection();
+            String sql = "{CALL UpdateTour (?, ?, ?, ?, ?, ?, ?, ?)}";
+            caStmt = conn.prepareCall(sql);
+            caStmt.setInt(1, id);
+            caStmt.setString(2, name);
+            caStmt.setString(3, review);
+            caStmt.setInt(4, price);
+            caStmt.setInt(5, quantity);
+            caStmt.setObject(6, image, java.sql.Types.VARCHAR);
+            caStmt.setDate(7, fromDate);
+            caStmt.setDate(8, toDate);
+            caStmt.execute();
+            updated = caStmt.getUpdateCount() > 0;
+        } finally {
+            closeConn();
+        }
+        return updated;
     }
 }

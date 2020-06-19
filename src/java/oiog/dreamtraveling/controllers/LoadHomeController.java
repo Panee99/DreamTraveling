@@ -101,16 +101,16 @@ public class LoadHomeController extends HttpServlet {
                     rpp = 5;
                 }
             }
-            
+
             /*=== get data ===*/
             TourDAO dao = new TourDAO();
-            int totalResult = dao.getTourInfoForHomePageLength(paramName, fromDate, toDate, fromPrice, toPrice, 1);// last number 1 mean quantity >= 1
+            int totalResult = dao.getTourInfoForHomePageLength(paramName, fromDate, toDate, fromPrice, toPrice, 1, false);// last number 1 mean quantity >= 1
             int totalPage = ((Double) Math.ceil((float) totalResult / rpp)).intValue();
             request.setAttribute("total_page", totalPage);
             request.setAttribute("page", page);
 
             /*=== get data ===*/
-            Map< Integer, TourDTO> listTour = dao.getTourInfoForHomePage(paramName, fromDate, toDate, fromPrice, toPrice, 1, page, rpp);
+            Map< Integer, TourDTO> listTour = dao.getTourInfoForHomePage(paramName, fromDate, toDate, fromPrice, toPrice, 1, false, page, rpp);
             request.setAttribute("list_tour", listTour);
             url = HOME_P;
 

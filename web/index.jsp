@@ -15,7 +15,7 @@
     <section class="search-tour">
         <form class="form-inline justify-content-end" action="LoadHome" method="POST">
             <div class="form-group mr-2">
-                <input type="text" class="form-control date-picker-couple" placeholder="From - To" value="${param.dateRange}" name="dateRange">
+                <input type="text" class="form-control user-date-picker-couple" placeholder="From - To" value="${param.dateRange}" name="dateRange">
             </div>
             <div class="form-group mr-2">
                 <input type="text" class="form-control" name="name" placeholder="Name" value="${param.name}">
@@ -23,7 +23,7 @@
             <button type="submit" class="btn btn-primary">Search</button>
             <div class="form-group justify-content-end w-100 mt-5 pr-5">
                 <label class="mr-5">Price:</label>
-                <input type="hidden" class="range-slider" name="priceRange" data-value="${param.priceRange}"/>
+                <input type="hidden" class="range-slider" name="priceRange" data-value="${param.priceRange}" />
             </div>
         </form>
     </section>
@@ -35,7 +35,10 @@
                 <!-- card -->
                 <div class="col mb-4">
                     <div class="card">
-                        <img src="${tour.value.image}" alt="${tour.value.name}">
+                        <figure class="figure">
+                            <label class="tour-image figure-img img-fluid rounded" style="background-image: url(${tour.value.image});">
+                            </label>
+                        </figure>
                         <div class="card-body">
                             <h5 class="card-title">${tour.value.name}</h5>
                             <div class="small mb-4"><span>

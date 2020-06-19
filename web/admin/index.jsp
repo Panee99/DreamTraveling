@@ -14,7 +14,7 @@
     <section class="search-tour">
         <form class="form-inline justify-content-end" action="LoadAdmin" method="POST">
             <div class="form-group mr-2">
-                <input type="text" class="form-control date-picker-couple" placeholder="From - To" value="${param.dateRange}" name="dateRange">
+                <input type="text" class="form-control admin-date-picker-couple" placeholder="From - To" value="${param.dateRange}" name="dateRange">
             </div>
             <div class="form-group mr-2">
                 <input type="text" class="form-control" name="name" placeholder="Name" value="${param.name}">
@@ -28,9 +28,25 @@
     </section>
     <!-- end search -->
     <!-- new tour -->
-    <a href="NewTour" class="btn btn-success">New</a>
+    <a href="NewTour" class="btn btn-success mb-3">New</a>
     <!-- end new tour -->
     <!-- table list tour -->
+    <c:if test="${not empty requestScope.message}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            ${requestScope.message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </c:if>
+    <c:if test="${not empty requestScope.error}">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            ${requestScope.error}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </c:if>
     <table class="table table-bordered" id="table-tour">
         <thead>
             <tr class="text-center">
@@ -44,10 +60,10 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach var="tour" items="${requestScope.list_tour}" varStatus="count">
+            <c:forEach var="tour" items="${requestScope.list_tour}">
                 <%-- row tour --%>
                 <tr class="text-center">
-                    <th scope="row" class="td-id">${count.index + 1}</th>
+                    <th scope="row" class="td-id">${tour.value.id}</th>
                     <td class="td-name">${tour.value.name}</td>
                     <td class="td-img">
                         <figure class="figure">
@@ -56,10 +72,10 @@
                     </td>
                     <td class="td-date"><fmt:formatDate value="${tour.value.fromDate}" pattern="dd/MM/yyyy" /><span>-</span><fmt:formatDate value="${tour.value.toDate}" pattern="dd/MM/yyyy" /></td>
                     <td class="td-amount">${tour.value.quantity}</td>
-                    <td class="td-price numberCommas">${tour.value.price}<span>đ</span></td>
+                    <td class="td-price numberCommas">${tour.value.price}<span> đ</span></td>
                     <td class="td-action">
                         <a href="UpdateTour?id=${tour.value.id}" class="btn btn-primary">Edit</a>
-                        <a href="DeleteTour?id=${tour.value.id}" class="btn btn-danger">Delete</a>
+                        <a href="DeactiveTour?id=${tour.value.id}" class="btn btn-danger">Delete</a>
                     </td>
                 </tr>
                 <%-- end row tour --%>

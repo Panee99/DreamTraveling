@@ -28,7 +28,7 @@ CREATE TABLE tblTour
       price INT NOT NULL ,
       quantity INT NOT NULL ,
       image VARCHAR(255) NOT NULL ,
-      dateImport DATE NOT NULL ,
+      dateImport DATETIME NOT NULL ,
       status VARCHAR(10) NOT NULL
     );
 GO
@@ -132,6 +132,32 @@ AS
     END;
 GO
 
+ALTER PROC [dbo].[UpdateTour]
+    @id AS INT ,
+    @name AS NVARCHAR(20) ,
+    @review AS NTEXT ,
+    @price AS INT ,
+    @quantity AS INT ,
+    @image AS VARCHAR(255) ,
+    @fromDate AS DATE ,
+    @toDate AS DATE
+AS
+    BEGIN
+        UPDATE  dbo.tblTour
+        SET     name = @name ,
+                review = @review ,
+                fromDate = @fromDate ,
+                toDate = @toDate ,
+                price = @price ,
+                quantity = @quantity ,
+                image = CASE WHEN @image IS NOT NULL THEN @image
+                             ELSE image
+                        END
+        WHERE   id = @id
+                AND status = 'active';
+    END;
+GO
+
 ---- User
 CREATE PROC [dbo].[CheckLogin]
     @username AS VARCHAR(20) ,
@@ -186,6 +212,7 @@ CREATE PROC [dbo].[GetToursInfoForHome]
     @fromPrice AS INT ,
     @toPrice AS INT ,
     @minQuantity AS INT ,
+    @fromNowOn AS BIT ,
     @page AS INT ,
     @rpp AS INT
 AS
@@ -213,8 +240,10 @@ AS
                       AND price <= @toPrice
                     )
                 AND quantity >= @minQuantity
-                 AND fromDate >=  CASt (CURRENT_TIMESTAMP  AS DATE )
-        ORDER BY dateImport
+                AND ( @fromNowOn = 1
+                      OR fromDate >= CAST(CURRENT_TIMESTAMP AS DATE)
+                    )
+        ORDER BY dateImport DESC
                 OFFSET ( ( @page - 1 ) * @rpp ) ROWS FETCH NEXT @rpp ROW ONLY;
     END;
 GO
@@ -225,7 +254,8 @@ CREATE PROC [dbo].[GetToursInfoForHomeLength]
     @toDate AS DATE ,
     @fromPrice AS INT ,
     @toPrice AS INT ,
-    @minQuantity AS INT
+    @minQuantity AS INT ,
+    @fromNowOn AS BIT
 AS
     BEGIN
 	-- get number of result
@@ -244,25 +274,46 @@ AS
                       AND price <= @toPrice
                     )
                 AND quantity >= @minQuantity
-                AND fromDate >=  CASt (CURRENT_TIMESTAMP  AS DATE )
+                AND ( @fromNowOn = 1
+                      OR fromDate >= CAST(CURRENT_TIMESTAMP AS DATE)
+                    );
     END;
 GO
 
-EXEC dbo.GetToursInfoForHomeLength @name = '', -- nvarchar(20)
-    @fromDate = null, -- date
-    @toDate = null, -- date
-    @fromPrice = null, -- int
-    @toPrice = null, -- int
-    @minQuantity = 0 -- int
+CREATE PROC GetTourByID @id AS INT
+AS
+    BEGIN
+        SELECT  id ,
+                name ,
+                review ,
+                fromDate ,
+                toDate ,
+                price ,
+                quantity ,
+                image
+        FROM    dbo.tblTour
+        WHERE   id = @id
+                AND status = 'active';
+    END;
+GO 
 
-	SELECT * FROM dbo.tblTour
+CREATE PROC DeactiveTourByID @id AS INT
+AS
+    BEGIN
+        UPDATE  dbo.tblTour
+        SET     status = 'inactive'
+        WHERE   id = @id;
+    END;
+GO
 
-	EXEC dbo.GetToursInfoForHome @name = '', -- nvarchar(20)
-	    @fromDate = null, -- date
-	    @toDate = null, -- date
-	    @fromPrice = null, -- int
-	    @toPrice = null, -- int
-	    @minQuantity = 0, -- int
-	    @page = 1, -- int
-	    @rpp = 9 -- int
-	
+CREATE PROC getImageOfTour @id AS INT
+AS
+    BEGIN
+        SELECT  image
+        FROM    dbo.tblTour
+        WHERE   id = @id;
+    END;
+GO
+
+SELECT  *
+FROM    dbo.tblTour;
