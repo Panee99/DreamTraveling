@@ -45,7 +45,12 @@
                                     <fmt:formatDate value="${tour.value.fromDate}" pattern="dd/MM/yyyy" /></span> - <span>
                                     <fmt:formatDate value="${tour.value.toDate}" pattern="dd/MM/yyyy" /></span></div>
                             <p>${tour.value.review}</p>
-                            <button class="btn btn-success w-100 mt-3">Book This Tour</button>
+                            <c:if test="${not empty sessionScope.user}">
+                                <button class="btn btn-success w-100 mt-3" onclick="bookTour(${tour.value.id}, '${tour.value.name}',${tour.value.quantity})">Book This Tour</button>
+                            </c:if>
+                            <c:if test="${empty sessionScope.user}">
+                                <button class="btn btn-success w-100 mt-3" onclick="requireLogin()">Book This Tour</button>
+                            </c:if>
                         </div>
                         <div class="card-footer">
                             <div class="row row-cols-2">

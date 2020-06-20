@@ -1,10 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@include file="/includes/header.jsp" %>
+<%@include file="../includes/header.jsp" %>
 
 <!-- top navbar -->
-<%@include file="/includes/navbar.jsp" %>
+<%@include file="includes/navbar.jsp" %>
 <!-- end top navbar -->
 <c:if test="${requestScope.form_action eq 'AddTour'}">
     <c:set var="tName" value="${param.tourName}"/>
@@ -85,7 +85,7 @@
                     <div class="form-group row">
                         <label for="tourPrice" class="col-2 col-form-label col-form-label-lg font-weight-bold">Price:</label>
                         <div class="col-10">
-                            <input type="number" class="form-control-lg w-100" id="tourPrice" name="tourPrice" min="0" max="10000000" value="${tPrice}">
+                            <input type="number" class="form-control-lg w-100" id="tourPrice" name="tourPrice" min="0" max="100000000" value="${tPrice}">
                             <c:if test="${requestScope.error_validate.has('price')}">
                                 <p class="text-danger">${requestScope.error_validate.get('price')}</p>
                             </c:if>
@@ -120,4 +120,4 @@
         document.querySelector("#formTour").reset();
     </script>
 </c:if>
-<%@include file="/includes/footer.jsp" %>
+<%@include file="../includes/footer.jsp" %>

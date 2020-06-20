@@ -174,7 +174,7 @@ public class TourDAO {
         return deactived;
     }
 
-    public boolean deleteImageByID(int id) throws SQLException, NamingException {
+    public boolean deleteImageByID(int id, String uploadPath) throws SQLException, NamingException {
         boolean deleted = false;
         try {
             conn = MyConnection.getConnection();
@@ -186,7 +186,7 @@ public class TourDAO {
                 rs = caStmt.getResultSet();
                 if (rs.next()) {
                     String imgPath = rs.getString("image");
-                    deleted = deleteImage(imgPath);
+                    deleted = deleteImage(imgPath, uploadPath);
                 }
             }
         } catch (IOException ex) {
@@ -197,8 +197,10 @@ public class TourDAO {
         return deleted;
     }
 
-    private boolean deleteImage(String filePath) throws IOException {
-        File file = new File(filePath);
+    private boolean deleteImage(String filePath,String uploadPath) throws IOException {
+        String[] imageNamePart = filePath.split("/");
+        String fileName = imageNamePart[imageNamePart.length - 1];
+        File file = new File(uploadPath + fileName);
         return Files.deleteIfExists(file.toPath());
     }
 
@@ -223,4 +225,5 @@ public class TourDAO {
         }
         return updated;
     }
+    
 }

@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import oiog.dreamtraveling.dtos.UserDTO;
 import org.apache.log4j.Logger;
@@ -112,6 +113,7 @@ public class MainController implements Filter {
             throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
         String uri = req.getRequestURI();
         String url = ERROR_P;
         HttpSession session = ((HttpServletRequest) request).getSession();
@@ -140,6 +142,13 @@ public class MainController implements Filter {
                 if (requireRole == null) {
                     url = resource.substring(0, 1).toUpperCase() + resource.substring(1) + "Controller";
                 } else {
+                    boolean isAjax = "XMLHttpRequest".equals(
+                            req.getHeader("X-Requested-With"));
+                    if (isAjax) {
+                        res.sendError(401);
+                        res.getWriter().flush();
+                        return;
+                    }
                     request.setAttribute("error", "Please login as [" + requireRole.get(0) + "] to do this action");
                     url = ERROR401_P;
                 }
@@ -210,6 +219,8 @@ public class MainController implements Filter {
         validRole.put("UpdateTour", new ArrayList(Arrays.asList("admin")));
         validRole.put("DeactiveTour", new ArrayList(Arrays.asList("admin")));
         validRole.put("LoadHome", new ArrayList(Arrays.asList("user", null)));
+        validRole.put("BookTour", new ArrayList(Arrays.asList("user")));
+        validRole.put("ViewCart", new ArrayList(Arrays.asList("user")));
     }
 
     /**

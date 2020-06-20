@@ -29,7 +29,10 @@ $(function () {
     minDate: currentDate.toString(),
     opens: "center",
   });
-  $(".user-date-picker-couple").on("apply.daterangepicker", function (ev, picker) {
+  $(".user-date-picker-couple").on("apply.daterangepicker", function (
+    ev,
+    picker
+  ) {
     $(this).val(
       picker.startDate.format("DD/MM/YYYY") +
         " - " +
@@ -37,7 +40,10 @@ $(function () {
     );
   });
 
-  $(".user-date-picker-couple").on("cancel.daterangepicker", function (ev, picker) {
+  $(".user-date-picker-couple").on("cancel.daterangepicker", function (
+    ev,
+    picker
+  ) {
     $(this).val("");
   });
   $(".admin-date-picker-couple").daterangepicker({
@@ -50,7 +56,10 @@ $(function () {
     },
     opens: "center",
   });
-  $(".admin-date-picker-couple").on("apply.daterangepicker", function (ev, picker) {
+  $(".admin-date-picker-couple").on("apply.daterangepicker", function (
+    ev,
+    picker
+  ) {
     $(this).val(
       picker.startDate.format("DD/MM/YYYY") +
         " - " +
@@ -58,7 +67,10 @@ $(function () {
     );
   });
 
-  $(".admin-date-picker-couple").on("cancel.daterangepicker", function (ev, picker) {
+  $(".admin-date-picker-couple").on("cancel.daterangepicker", function (
+    ev,
+    picker
+  ) {
     $(this).val("");
   });
   // init range slider
@@ -108,7 +120,6 @@ $(function () {
   // modal auto focus
   $(".modal").each(function () {
     $(this).on("shown.bs.modal", function () {
-      console.log("shown");
       $(this).find("[autofocus]").focus();
     });
   });
@@ -206,8 +217,6 @@ $(function () {
       }
       let reader = new FileReader();
       reader.onload = (e) => {
-        console.log("updated");
-        console.log("e.target.result :>> ", e.target.result);
         $("#fileTourImageDemo").css({
           "background-image": `url(${e.target.result})`,
         });
@@ -216,3 +225,48 @@ $(function () {
     }
   });
 });
+// ajax booking
+async function bookTour(id, name, totalAmount) {
+  const { value: amount } = await Swal.fire({
+    title: `Booking [${name}]`,
+    input: "number",
+    inputValue: 1,
+    inputPlaceholder: "Amount",
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (value < 1) {
+        return "Amount min: 1";
+      } else if (value > totalAmount) {
+        return `Amount max: ${totalAmount}`;
+      }
+    },
+  });
+  if (amount) {
+    $.ajax({
+      type: "POST",
+      url: "BookTour",
+      data: {
+        id: id,
+        amount: amount,
+      },
+      dataType: "json",
+      success: function (data, textStatus, xhr) {
+        if (data.action !== undefined) {
+          Swal.fire("Success!", `${data.action} tour ${name}`, "success");
+          console.log(data.cart);
+        }
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        if (xhr.status === 401) {
+          Swal.fire("Failed!", "Please login before book tour", "error");
+        } else {
+          alert(thrownError);
+        }
+      },
+    });
+  }
+}
+// alert not login
+function requireLogin() {
+  Swal.fire("Failed!", "Please login before book tour", "error");
+}

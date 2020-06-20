@@ -182,7 +182,8 @@ public class UpdateTourController extends HttpServlet {
                 /*=== new tour ===*/
                 TourDAO dao = new TourDAO();
                 if (imagePath != null) {
-                    dao.deleteImageByID(idInt);
+                    String uploadPath = getServletContext().getRealPath("/uploads/");
+                    dao.deleteImageByID(idInt, uploadPath);
                 }
                 if (dao.updateTour(idInt, name, review, priceInt, quantityInt, imagePath, fromDate, toDate)) {
                     resMsg.put("success", "Updated tour [" + name + "]");

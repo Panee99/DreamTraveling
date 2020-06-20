@@ -5,7 +5,7 @@
 <%@include file="../includes/header.jsp" %>
 
 <!-- top navbar -->
-<%@include file="../includes/navbar.jsp" %>
+<%@include file="includes/navbar.jsp" %>
 <!-- end top navbar -->
 <!-- body -->
 <!-- container -->

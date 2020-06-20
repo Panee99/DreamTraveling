@@ -132,7 +132,7 @@ AS
     END;
 GO
 
-ALTER PROC [dbo].[UpdateTour]
+CREATE PROC [dbo].[UpdateTour]
     @id AS INT ,
     @name AS NVARCHAR(20) ,
     @review AS NTEXT ,

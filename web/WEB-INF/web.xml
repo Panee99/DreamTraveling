@@ -57,6 +57,14 @@
         <servlet-name>DeactiveTourController</servlet-name>
         <servlet-class>oiog.dreamtraveling.controllers.DeactiveTourController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BookTourController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.BookTourController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewCartController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.ViewCartController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadHomeController</servlet-name>
         <url-pattern>/LoadHomeController</url-pattern>
@@ -92,6 +100,14 @@
     <servlet-mapping>
         <servlet-name>DeactiveTourController</servlet-name>
         <url-pattern>/DeactiveTourController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BookTourController</servlet-name>
+        <url-pattern>/BookTourController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewCartController</servlet-name>
+        <url-pattern>/ViewCartController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
