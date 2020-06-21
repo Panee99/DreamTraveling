@@ -94,7 +94,7 @@ public class TourDAO {
                 while (rs.next()) {
                     TourDTO tour = new TourDTO();
                     tour.setId(rs.getInt("id"));
-                    tour.setName(rs.getNString("Name"));
+                    tour.setName(rs.getNString("name"));
                     tour.setReview(rs.getNString("review"));
                     tour.setPrice(rs.getInt("price"));
                     tour.setQuantity(rs.getInt("quantity"));
@@ -197,7 +197,7 @@ public class TourDAO {
         return deleted;
     }
 
-    private boolean deleteImage(String filePath,String uploadPath) throws IOException {
+    private boolean deleteImage(String filePath, String uploadPath) throws IOException {
         String[] imageNamePart = filePath.split("/");
         String fileName = imageNamePart[imageNamePart.length - 1];
         File file = new File(uploadPath + fileName);
@@ -225,5 +225,32 @@ public class TourDAO {
         }
         return updated;
     }
-    
+
+    public Map<Integer, TourDTO> getTourInfoForViewCart(String ids) throws SQLException, NamingException {
+        Map<Integer, TourDTO> tours = new HashMap();
+        try {
+            conn = MyConnection.getConnection();
+            String sql = "{CALL GetTourInfoForViewCart (?)}";
+            caStmt = conn.prepareCall(sql);
+            caStmt.setString(1, ids);
+            boolean hasRsSet = caStmt.execute();
+            if (hasRsSet) {
+                rs = caStmt.getResultSet();
+                while (rs.next()) {
+                    TourDTO tour = new TourDTO();
+                    tour.setId(rs.getInt("id"));
+                    tour.setName(rs.getNString("name"));
+                    tour.setPrice(rs.getInt("price"));
+                    tour.setQuantity(rs.getInt("quantity"));
+                    tour.setImage(rs.getString("image"));
+                    tour.setFromDate(rs.getDate("fromDate"));
+                    tour.setToDate(rs.getDate("toDate"));
+                    tours.put(tour.getId(), tour);
+                }
+            }
+        } finally {
+            closeConn();
+        }
+        return tours;
+    }
 }

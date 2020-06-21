@@ -270,3 +270,42 @@ async function bookTour(id, name, totalAmount) {
 function requireLogin() {
   Swal.fire("Failed!", "Please login before book tour", "error");
 }
+// viewCart action
+async function removeFromCard(id, name) {
+  Swal.fire({
+    title: "Are you sure?",
+    text: `Remove ${name} form shopping cart`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#28a745",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.value) {
+      $.ajax({
+        type: "POST",
+        url: "RemoveFromCart",
+        data: {
+          id: id,
+        },
+        dataType: "json",
+        success: function (data) {
+          Swal.fire("Deleted!", `You removed ${name} from shopping cart`, "success");
+          $(`#row-tour-${id}`).remove().then(updateViewShoppingCart());
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(thrownError);
+        },
+      });
+    }
+  });
+}
+function updateViewShoppingCart(){
+  if ($("#view-cart .card-body>.row").length === 0){
+    $("#view-cart .card-body").remove();
+    $("#view-cart .card-footer").remove();
+    $(".shopping-card").append(` <div class="card-footer">
+    <h3 class="text-danger">Your cart is empty <a href="./" class="btn btn-outline-info btn-sm">Continue shopping</a></h3>
+</div>`);
+  }
+}

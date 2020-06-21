@@ -315,5 +315,82 @@ AS
     END;
 GO
 
-SELECT  *
-FROM    dbo.tblTour;
+-- split string function
+CREATE FUNCTION [dbo].[func_Split]
+    (
+      @DelimitedString VARCHAR(8000) ,
+      @Delimiter VARCHAR(100)
+    )
+RETURNS @tblArray TABLE
+    (
+      ElementID INT IDENTITY(1, 1) ,  -- Array index
+      Element VARCHAR(1000)               -- Array element contents
+    )
+AS
+    BEGIN
+
+    -- Local Variable Declarations
+    -- ---------------------------
+        DECLARE @Index SMALLINT ,
+            @Start SMALLINT ,
+            @DelSize SMALLINT;
+
+        SET @DelSize = LEN(@Delimiter);
+
+    -- Loop through source string and add elements to destination table array
+    -- ----------------------------------------------------------------------
+        WHILE LEN(@DelimitedString) > 0
+            BEGIN
+
+                SET @Index = CHARINDEX(@Delimiter, @DelimitedString);
+
+                IF @Index = 0
+                    BEGIN
+
+                        INSERT  INTO @tblArray
+                                ( Element )
+                        VALUES  ( LTRIM(RTRIM(@DelimitedString)) );
+
+                        BREAK;
+                    END;
+                ELSE
+                    BEGIN
+
+                        INSERT  INTO @tblArray
+                                ( Element
+                                )
+                        VALUES  ( LTRIM(RTRIM(SUBSTRING(@DelimitedString, 1,
+                                                        @Index - 1)))
+                                );
+
+                        SET @Start = @Index + @DelSize;
+                        SET @DelimitedString = SUBSTRING(@DelimitedString,
+                                                         @Start,
+                                                         LEN(@DelimitedString)
+                                                         - @Start + 1);
+
+                    END;
+            END;
+
+        RETURN;
+    END;
+GO 
+	
+CREATE PROC GetTourInfoForViewCart @ids AS VARCHAR(100)
+AS
+    BEGIN
+        SELECT  id ,
+                name ,
+                fromDate ,
+                toDate ,
+                price ,
+                quantity ,
+                image
+        FROM    dbo.tblTour
+        WHERE   id IN ( SELECT  Element AS id
+                        FROM    func_Split(@ids, ',') )
+                AND status = 'active';
+    END;
+GO
+
+EXEC dbo.GetTourInfoForViewCart @ids = '1,2,4,5' -- varchar(100)

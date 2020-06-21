@@ -6,26 +6,20 @@
 package oiog.dreamtraveling.controllers;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.PrintWriter;
 import java.util.Map;
-import java.util.StringJoiner;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import oiog.dreamtraveling.daos.TourDAO;
-import oiog.dreamtraveling.dtos.TourDTO;
-import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 /**
  *
  * @author hoang
  */
-public class ViewCartController extends HttpServlet {
-
-    private static final Logger LOGGER = Logger.getLogger(ViewCartController.class);
-    private static final String VIEW_CART_P = "viewcart.jsp";
+public class RemoveFromCartController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,36 +33,28 @@ public class ViewCartController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String id = request.getParameter("id");
+        PrintWriter out = response.getWriter();
+        int resCode = 0;
+        String resMsg = null;
         try {
-            Map<Integer, TourDTO> viewCart = null;
+            int idInt = Integer.parseInt(id);
             HttpSession session = request.getSession();
             Map<Integer, Integer> cart = (Map<Integer, Integer>) session.getAttribute("cart");
-            if (cart != null && !cart.isEmpty()) {
-                viewCart = new HashMap();
-                StringJoiner joiner = new StringJoiner(",");
-                cart.forEach((k, v) -> {
-                    joiner.add(k.toString());
-                });
-                String ids = joiner.toString();
-                TourDAO dao = new TourDAO();
-                viewCart = dao.getTourInfoForViewCart(ids);
-                Map<Integer, Integer> overQuantity = new HashMap();
-                viewCart.forEach((k, v) -> {
-                    int leftQuantity = v.getQuantity();
-                    int cartAmount = cart.get(k);
-                    v.setQuantity(cartAmount);
-                    if (leftQuantity < cartAmount) {
-                        overQuantity.put(k, leftQuantity);
-                    }
-                });
-                request.setAttribute("view_cart", viewCart);
-                request.setAttribute("over_quantity", overQuantity);
-            }
+            cart.remove(idInt);
+        } catch (NumberFormatException e) {
+            resCode = 400;
+            resMsg = "Invalid ID";
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            request.setAttribute("error", "Server busy please try again");
-        }finally{
-            request.getRequestDispatcher(VIEW_CART_P).forward(request, response);
+            resCode = 500;
+            resMsg = "Server busy please try again";
+        } finally {
+            if (resCode == 0) {
+                out.print(new JSONObject());
+                out.flush();
+            } else {
+                response.sendError(resCode, resMsg);
+            }
         }
     }
 

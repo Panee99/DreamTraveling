@@ -43,7 +43,7 @@
                                 <i class="fas fa-user mr-1"></i> ${sessionScope.user.name}
                             </a>
                             <div class="dropdown-menu dropdown-menu-right w-100" id="DropdownUserMenu">
-                                <a class="dropdown-item" href="#">Cart</a>
+                                <a class="dropdown-item" href="ViewCart">Cart</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="${pageContext.request.contextPath}/Logout">Log out</a>
                             </div>

@@ -221,6 +221,7 @@ public class MainController implements Filter {
         validRole.put("LoadHome", new ArrayList(Arrays.asList("user", null)));
         validRole.put("BookTour", new ArrayList(Arrays.asList("user")));
         validRole.put("ViewCart", new ArrayList(Arrays.asList("user")));
+        validRole.put("RemoveFromCart", new ArrayList(Arrays.asList("user")));
     }
 
     /**

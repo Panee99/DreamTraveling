@@ -6,14 +6,6 @@
 <!-- top navbar -->
 <%@include file="includes/navbar.jsp" %>
 <!-- end top navbar -->
-<c:if test="${requestScope.form_action eq 'AddTour'}">
-    <c:set var="tName" value="${param.tourName}"/>
-    <c:set var="tDate" value="${param.tourDate}"/>
-    <c:set var="tPrice" value="${param.tourPrice}"/>
-    <c:set var="tQuantity" value="${param.tourQuantity}"/>
-    <c:set var="tReview" value="${param.tourReview}"/>
-    <c:set var="tImage" value=""/>
-</c:if>
 <c:if test="${requestScope.form_action eq 'UpdateTour'}">
     <c:set var="tName" value="${requestScope.tour.name}"/>
     <fmt:formatDate value="${requestScope.tour.fromDate}" pattern="dd/MM/yyyy" var="fromDate"/>

@@ -105,6 +105,10 @@ section.search-tour {
   background-size: cover;
   margin: auto;
 }
+.tour-image.sm{
+  height: 112px;
+  width: 150px;
+}
 .tour-image input[type=file]{
   display: none;
 }
