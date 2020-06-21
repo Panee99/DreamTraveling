@@ -57,7 +57,8 @@ GO
 CREATE TABLE tblDiscount
     (
       code VARCHAR(20) PRIMARY KEY ,
-      details NVARCHAR(255) ,
+	  discount INT NOT NULL,
+	  isPercent BIT NOT NULL,
       expiryDate DATETIME NOT NULL ,
       status VARCHAR(10) NOT NULL,
     );
@@ -393,4 +394,35 @@ AS
     END;
 GO
 
-EXEC dbo.GetTourInfoForViewCart @ids = '1,2,4,5' -- varchar(100)
+CREATE PROC CheckDiscount
+    @userId AS VARCHAR(20) ,
+    @code AS VARCHAR(20)
+AS
+    BEGIN
+        SELECT  discount ,
+                isPercent
+        FROM    dbo.tblDiscount
+        WHERE   code = @code
+		AND status = 'active'
+		AND CAST(expiryDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
+                AND @code NOT IN ( SELECT   discountCode
+                                   FROM     dbo.tblUserUsedDiscount
+                                   WHERE    userId = @userId );
+    END;
+GO
+
+INSERT INTO dbo.tblDiscount
+        ( code ,
+          discount ,
+          isPercent ,
+          expiryDate ,
+          status
+        )
+VALUES  ( '10' , -- code - varchar(20)
+          10 , -- discount - int
+          1 , -- isPercent - bit
+          '8/22/2020' , -- expiryDate - datetime
+          'active'  -- status - varchar(10)
+        )
+
+	

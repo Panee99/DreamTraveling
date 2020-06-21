@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="col-6">
                                     <h4 class="product-name"><strong>${tour.value.name}</strong></h4>
-                                    <h6> 
+                                    <h6>
                                         <fmt:formatDate value="${tour.value.fromDate}" pattern="dd/MM/yyyy" /></span> - <span>
                                             <fmt:formatDate value="${tour.value.toDate}" pattern="dd/MM/yyyy" /></span>
                                     </h6>
@@ -46,7 +46,7 @@
                                     </div>
                                     <div class="col-4">
                                         <div class="quantity">
-                                            <input type="number" max="100" min="1" value="${tour.value.quantity}" class="swal2-input my-0" name="quantity" onclick="updateFromCart(this)">
+                                            <input type="number" max="100" min="1" value="${tour.value.quantity}" class="swal2-input my-0" onchange="updateFromCart(this, ${tour.key}, '${tour.value.name}', ${tour.value.quantity})">
                                             <c:if test="${not empty requestScope.over_quantity && requestScope.over_quantity.containsKey(tour.key)}">
                                                 <small class="text-danger">We just have ${requestScope.over_quantity.get(tour.key)} ${tour.value.name}</small>
                                             </c:if>
@@ -59,23 +59,23 @@
                                     </div>
                                 </div>
                             </div>
-                        </c:forEach> 
+                        </c:forEach>
                     </div>
                     <div class="card-footer clearfix">
                         <div class="col-5 float-left">
                             <div class="row">
                                 <div class="col-6">
-                                    <input type="text" class="form-control" placeholder="Discount">
+                                    <input type="text" class="form-control" placeholder="Discount" id="discountCode">
                                 </div>
                                 <div class="col-6">
-                                    <button class="btn btn-primary">Use discount</button>
+                                    <button class="btn btn-primary" onclick="useDiscountCode()">Use discount</button>
                                 </div>
                             </div>
                         </div>
                         <div class="float-right">
                             <a href="#" class="btn btn-success float-right">Checkout</a>
                             <div class="float-right form-control w-auto mr-3">
-                                Total price: <b class="numberCommas">1000000 <span>đ</span></b>
+                                Total price: <b><span class="numberCommas" id="totalPrice">0</span> đ</b>
                             </div>
                         </div>
                     </div>

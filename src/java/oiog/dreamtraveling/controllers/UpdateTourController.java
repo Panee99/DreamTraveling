@@ -34,7 +34,6 @@ public class UpdateTourController extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(UpdateTourController.class);
     private static final String UPDATE_P = "admin/update.jsp";
-    private static final String UPDATE_TOUR = "UpdateTourController";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

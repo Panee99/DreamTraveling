@@ -69,6 +69,22 @@
         <servlet-name>RemoveFromCartController</servlet-name>
         <servlet-class>oiog.dreamtraveling.controllers.RemoveFromCartController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateFromCartController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.UpdateFromCartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TotalPriceCartController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.TotalPriceCartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UseDiscountController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.UseDiscountController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckoutController</servlet-name>
+        <servlet-class>oiog.dreamtraveling.controllers.CheckoutController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadHomeController</servlet-name>
         <url-pattern>/LoadHomeController</url-pattern>
@@ -116,6 +132,22 @@
     <servlet-mapping>
         <servlet-name>RemoveFromCartController</servlet-name>
         <url-pattern>/RemoveFromCartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateFromCartController</servlet-name>
+        <url-pattern>/UpdateFromCartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TotalPriceCartController</servlet-name>
+        <url-pattern>/TotalPriceCartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UseDiscountController</servlet-name>
+        <url-pattern>/UseDiscountController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckoutController</servlet-name>
+        <url-pattern>/CheckoutController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

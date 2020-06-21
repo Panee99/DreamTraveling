@@ -8,11 +8,16 @@ package oiog.dreamtraveling.controllers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.StringJoiner;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import oiog.dreamtraveling.daos.DiscountDAO;
+import oiog.dreamtraveling.daos.TourDAO;
+import oiog.dreamtraveling.dtos.TourDTO;
+import oiog.dreamtraveling.dtos.UserDTO;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -20,9 +25,9 @@ import org.json.JSONObject;
  *
  * @author hoang
  */
-public class RemoveFromCartController extends HttpServlet {
+public class TotalPriceCartController extends HttpServlet {
 
-    private static final Logger LOGGER = Logger.getLogger(RemoveFromCartController.class);
+    private static final Logger LOGGER = Logger.getLogger(TotalPriceCartController.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,29 +41,57 @@ public class RemoveFromCartController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String id = request.getParameter("id");
         PrintWriter out = response.getWriter();
         int resCode = 200;
         String resMsg = null;
+        String discountCode = request.getParameter("code");
+        JSONObject resJson = new JSONObject();
         try {
-            int idInt = Integer.parseInt(id);
+            /*=== calc total price ===*/
             HttpSession session = request.getSession();
             Map<Integer, Integer> cart = (Map<Integer, Integer>) session.getAttribute("cart");
-            cart.remove(idInt);
-        } catch (NumberFormatException e) {
-            resCode = 400;
-            resMsg = "Invalid ID";
+            StringJoiner joiner = new StringJoiner(",");
+            cart.forEach((k, v) -> {
+                joiner.add(k.toString());
+            });
+            String ids = joiner.toString();
+            TourDAO dao = new TourDAO();
+            Map<Integer, TourDTO> viewCart = dao.getTourInfoForViewCart(ids);
+
+            int totalPrice = 0;
+            totalPrice = cart.entrySet().stream().map((entry) -> viewCart.get(entry.getKey()).getPrice() * entry.getValue()).reduce(totalPrice, Integer::sum);
+
+            /*=== calc discount ===*/
+            if (discountCode != null) {
+                /*=== get userid ===*/
+                UserDTO user = (UserDTO) session.getAttribute("user");
+
+                /*=== check code ===*/
+                DiscountDAO discountDao = new DiscountDAO();
+                int[] info = discountDao.CheckDiscount(user.getUsername(), discountCode);
+                if (info != null) {
+                    if (info[1] == 1) {
+                        /*=== is percent ===*/
+                        totalPrice = totalPrice - (int) Math.ceil((float) totalPrice * info[0] / 100);
+                    } else {
+                        /*=== is price ===*/
+                        totalPrice = totalPrice - info[0];
+                    }
+                    resJson.put("code", discountCode);
+                    session.setAttribute("discount_code", discountCode);
+                }
+            }else{
+                session.removeAttribute("discount_code");
+            }
+            resJson.put("price", totalPrice);
+            resMsg = resJson.toString();
         } catch (Exception e) {
             resCode = 500;
             resMsg = "Server busy please try again";
             LOGGER.error(e.getMessage());
         } finally {
-            if (resCode == 200) {
-                out.print(new JSONObject());
-            } else {
-                response.setStatus(resCode);
-                out.print(resMsg);
-            }
+            response.setStatus(resCode);
+            out.print(resMsg);
             out.flush();
         }
     }

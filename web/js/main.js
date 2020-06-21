@@ -1,3 +1,14 @@
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  onOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 $(function () {
   let currentDate = {
     date: new Date(),
@@ -145,7 +156,7 @@ $(function () {
             window.location.replace(data.redirect);
           }
         },
-        error: function (xhr, ajaxOptions, thrownError) {
+        error: function (xhr, textStatus, thrownError) {
           alert(thrownError);
         },
       });
@@ -183,7 +194,7 @@ $(function () {
             $("#success-register").html(data.message);
           }
         },
-        error: function (xhr, ajaxOptions, thrownError) {
+        error: function (xhr, textStatus, thrownError) {
           alert(thrownError);
         },
       });
@@ -191,15 +202,7 @@ $(function () {
   }
   ajaxRegister();
   // format number
-  function formatNumberWithCommas() {
-    $(".numberCommas").each(function () {
-      $(this).html(
-        $(this)
-          .html()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-      );
-    });
-  }
+
   formatNumberWithCommas();
   // form
   $("input").attr("autocomplete", "off");
@@ -224,7 +227,27 @@ $(function () {
       reader.readAsDataURL(input.files[0]);
     }
   });
+  // totalPrice
+  getTotalPrice();
 });
+
+//====================================================================================================\\
+//====================================================================================================\\
+//====================================================================================================\\
+//====================================================================================================\\
+//====================================================================================================\\
+//====================================================================================================\\
+//====================================================================================================\\
+
+function formatNumberWithCommas() {
+  $(".numberCommas").each(function () {
+    $(this).html(
+      $(this)
+        .html()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    );
+  });
+}
 // ajax booking
 async function bookTour(id, name, totalAmount) {
   const { value: amount } = await Swal.fire({
@@ -256,7 +279,7 @@ async function bookTour(id, name, totalAmount) {
           console.log(data.cart);
         }
       },
-      error: function (xhr, ajaxOptions, thrownError) {
+      error: function (xhr, textStatus, thrownError) {
         if (xhr.status === 401) {
           Swal.fire("Failed!", "Please login before book tour", "error");
         } else {
@@ -271,7 +294,7 @@ function requireLogin() {
   Swal.fire("Failed!", "Please login before book tour", "error");
 }
 // viewCart action
-async function removeFromCard(id, name) {
+function removeFromCard(id, name) {
   Swal.fire({
     title: "Are you sure?",
     text: `Remove ${name} form shopping cart`,
@@ -290,22 +313,119 @@ async function removeFromCard(id, name) {
         },
         dataType: "json",
         success: function (data) {
-          Swal.fire("Deleted!", `You removed ${name} from shopping cart`, "success");
-          $(`#row-tour-${id}`).remove().then(updateViewShoppingCart());
+          Swal.fire(
+            "Deleted!",
+            `You removed ${name} from shopping cart`,
+            "success"
+          );
+          $.when($(`#row-tour-${id}`).remove()).then(updateViewShoppingCart());
+          getTotalPrice();
         },
-        error: function (xhr, ajaxOptions, thrownError) {
+        error: function (xhr, textStatus, thrownError) {
           alert(thrownError);
         },
       });
     }
   });
 }
-function updateViewShoppingCart(){
-  if ($("#view-cart .card-body>.row").length === 0){
+function updateFromCart(e, id, name, oldAmount) {
+  $.ajax({
+    type: "POST",
+    url: "UpdateFromCart",
+    data: {
+      id: id,
+      amount: $(e).val(),
+    },
+    dataType: "json",
+    success: function (data) {
+      Toast.fire({
+        icon: "success",
+        title: `Updated tour ${name}`,
+      });
+      getTotalPrice();
+    },
+    error: function (xhr, textStatus, thrownError) {
+      alert(xhr.responseText);
+      $(e).val(oldAmount);
+    },
+  });
+}
+function updateViewShoppingCart() {
+  if ($("#view-cart .card-body>.row").length === 0) {
     $("#view-cart .card-body").remove();
     $("#view-cart .card-footer").remove();
     $(".shopping-card").append(` <div class="card-footer">
     <h3 class="text-danger">Your cart is empty <a href="./" class="btn btn-outline-info btn-sm">Continue shopping</a></h3>
 </div>`);
   }
+}
+
+//  discount
+async function useDiscountCode() {
+  const discount = await getTotalPrice();
+  if (discount.code) {
+    Swal.fire({
+      icon: "success",
+      title: "Use discount successful",
+    });
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Discount code incorrect",
+    });
+  }
+}
+async function getTotalPrice() {
+  const discountCode = $("#discountCode").val();
+  if ($("#totalPrice").length === 0) return;
+  return await $.ajax({
+    type: "POST",
+    url: "TotalPriceCart",
+    data: {
+      code: discountCode,
+    },
+    dataType: "json",
+    success: function (data) {
+      if (data.code) {
+        $("#discountCode").val(data.code);
+      } else {
+        $("#discountCode").val("");
+      }
+      if (data.price) {
+        $("#totalPrice").html(data.price);
+      } else {
+        $("#totalPrice").html("");
+      }
+      formatNumberWithCommas();
+      return data;
+    },
+    error: function (xhr, textStatus, thrownError) {
+      Swal.fire({
+        icon: "error",
+        title: xhr.responseText,
+        text: "Cannot get totalPrice",
+      });
+    },
+  });
+}
+function Checkout(){
+  Swal.fire({
+    title: 'Checkout?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#28a745',
+    cancelButtonColor: '#d33',
+  }).then((result) => {
+
+
+
+    
+    if (result.value) {
+      Swal.fire(
+        'Deleted!',
+        'Your file has been deleted.',
+        'success'
+      )
+    }
+  })
 }

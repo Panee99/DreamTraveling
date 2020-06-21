@@ -7,16 +7,21 @@ package oiog.dreamtraveling.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 /**
  *
  * @author hoang
  */
-public class AuthenticateController extends HttpServlet {
+public class UpdateFromCartController extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(UpdateFromCartController.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,17 +35,32 @@ public class AuthenticateController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AuthenticateController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AuthenticateController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String id = request.getParameter("id");
+        String amount = request.getParameter("amount");
+        PrintWriter out = response.getWriter();
+        int resCode = 200;
+        String resMsg = null;
+        try {
+            int idInt = Integer.parseInt(id);
+            int amountInt = Integer.parseInt(amount);
+            HttpSession session = request.getSession();
+            Map<Integer, Integer> cart = (Map<Integer, Integer>) session.getAttribute("cart");
+            cart.put(idInt, amountInt);
+        } catch (NumberFormatException e) {
+            resCode = 400;
+            resMsg = "Invalid params";
+        } catch (Exception e) {
+            resCode = 500;
+            resMsg = "Server busy please try again";
+            LOGGER.error(e.getMessage());
+        } finally {
+            if (resCode == 200) {
+                out.print(new JSONObject());
+            } else {
+                response.setStatus(resCode);
+                out.print(resMsg);
+            }
+            out.flush();
         }
     }
 
