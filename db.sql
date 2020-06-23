@@ -41,7 +41,7 @@ CREATE TABLE tblBooking
                          FOREIGN KEY REFERENCES dbo.tblUser ( username ) ,
       dateOrder DATE NOT NULL ,
       disCountCode VARCHAR(20) ,
-      totalPrice FLOAT NOT NULL ,
+      totalPrice INT NOT NULL ,
       status VARCHAR(10) NOT NULL
     );
 GO
@@ -325,7 +325,7 @@ CREATE FUNCTION [dbo].[func_Split]
 RETURNS @tblArray TABLE
     (
       ElementID INT IDENTITY(1, 1) ,  -- Array index
-      Element VARCHAR(1000)               -- Array element contents
+      Element VARCHAR(1000) -- Array element contents
     )
 AS
     BEGIN
@@ -442,13 +442,58 @@ VALUES  ( '11' , -- code - varchar(20)
           'active'  -- status - varchar(10)
         );
 GO
---CREATE PROC Checkout
---@tours AS VARCHAR(100),
---@totalPrice AS INT
---AS
---BEGIN
-	
---END
---GO
 
+CREATE PROC NewBooking
+    (
+      @userId VARCHAR(20) ,
+      @discountCode VARCHAR(10) ,
+      @totalPrice INT,
+	  @bookingId int out
+    )
+AS
+    BEGIN
+        INSERT  INTO dbo.tblBooking
+                ( userId ,
+                  dateOrder ,
+                  disCountCode ,
+                  totalPrice ,
+                  status
+	            )
+        VALUES  ( @userId , -- userId - varchar(20)
+                  GETDATE() , -- dateOrder - date
+                  @discountCode , -- disCountCode - varchar(20)
+                  @totalPrice , -- totalPrice - int
+                  'waiting'  -- status - varchar(10)
+	            );
+        SET @bookingId = @@IDENTITY
+    END;
+GO 
 
+CREATE PROC SaveBookingDetails
+    (
+      @bookingId INT ,
+      @tourId INT ,
+      @tourAmount INT,
+	  @newQuantity INT OUT
+    )
+AS
+    BEGIN
+        UPDATE  dbo.tblTour
+        SET     quantity = ( SELECT quantity
+                             FROM   dbo.tblTour
+                             WHERE  id = @tourId
+                           ) - @tourAmount
+        WHERE   id = @tourId;
+
+		INSERT INTO dbo.tblBookingDetails
+		        ( bookingId, tourId, amount )
+		VALUES  ( @bookingId, -- bookingId - int
+		          @tourId, -- tourId - int
+		          @tourAmount  -- amount - int
+		          )
+
+        SELECT  @newQuantity = quantity
+        FROM    dbo.tblTour
+        WHERE   id = @tourId;
+    END;
+GO 

@@ -11,6 +11,7 @@
 <!-- body -->
 <!-- container -->
 <div class="container">
+    ${requestScope.error_checkout}
     <c:if test="${not empty requestScope.error}">
         <h1 class="text-danger">${requestScope.error}</h1>
         <a href="./">Back</a>
@@ -73,7 +74,7 @@
                             </div>
                         </div>
                         <div class="float-right">
-                            <a href="#" class="btn btn-success float-right">Checkout</a>
+                            <a href="Checkout" class="btn btn-success float-right">Checkout</a>
                             <div class="float-right form-control w-auto mr-3">
                                 Total price: <b><span class="numberCommas" id="totalPrice">0</span> đ</b>
                             </div>

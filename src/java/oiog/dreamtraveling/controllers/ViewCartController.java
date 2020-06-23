@@ -6,7 +6,9 @@
 package oiog.dreamtraveling.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 import javax.servlet.ServletException;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import oiog.dreamtraveling.daos.BookingDAO;
 import oiog.dreamtraveling.daos.TourDAO;
 import oiog.dreamtraveling.dtos.TourDTO;
 import oiog.dreamtraveling.dtos.UserDTO;
@@ -27,6 +30,7 @@ public class ViewCartController extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(ViewCartController.class);
     private static final String VIEW_CART_P = "viewcart.jsp";
+    private static final String CHECKOUT_SUCCESSFUL = "checkout_successful.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,6 +45,7 @@ public class ViewCartController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         boolean isCheckout = request.getAttribute("checkout") != null;
+        String url = VIEW_CART_P;
         try {
             Map<Integer, TourDTO> viewCart = null;
             HttpSession session = request.getSession();
@@ -71,7 +76,24 @@ public class ViewCartController extends HttpServlet {
                     if (totalPrice != null) {
                         /*=== do checkout ===*/
                         UserDTO user = (UserDTO) session.getAttribute("user");
-                        
+                        /*=== join data ===*/
+                        String cartToString;
+                        List<String> once = new ArrayList();
+                        cart.forEach((k, v) -> {
+                            once.add(k + "-" + v);
+                        });
+                        cartToString = String.join(",", once);
+                        BookingDAO bookingDao = new BookingDAO();
+                        if (bookingDao.checkout(cart, user.getUsername(), discountCode, totalPrice)) {
+                            url = CHECKOUT_SUCCESSFUL;
+                            session.removeAttribute("cart");
+                            session.removeAttribute("total_price");
+                            session.removeAttribute("discount_code");
+                            session.removeAttribute("view_cart");
+                            session.removeAttribute("over_quantity");
+                        } else {
+                            request.setAttribute("error_checkout", "Checkout fail");
+                        }
                     }
                 }
             }
@@ -79,7 +101,7 @@ public class ViewCartController extends HttpServlet {
             LOGGER.error(e.getMessage());
             request.setAttribute("error", "Server busy please try again");
         } finally {
-            request.getRequestDispatcher(VIEW_CART_P).forward(request, response);
+            request.getRequestDispatcher(url).forward(request, response);
         }
     }
 

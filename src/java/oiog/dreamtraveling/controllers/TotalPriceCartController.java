@@ -83,6 +83,7 @@ public class TotalPriceCartController extends HttpServlet {
             }else{
                 session.removeAttribute("discount_code");
             }
+            session.setAttribute("total_price", totalPrice);
             resJson.put("price", totalPrice);
             resMsg = resJson.toString();
         } catch (Exception e) {
