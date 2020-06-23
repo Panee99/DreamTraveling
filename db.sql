@@ -57,8 +57,8 @@ GO
 CREATE TABLE tblDiscount
     (
       code VARCHAR(20) PRIMARY KEY ,
-	  discount INT NOT NULL,
-	  isPercent BIT NOT NULL,
+      discount INT NOT NULL ,
+      isPercent BIT NOT NULL ,
       expiryDate DATETIME NOT NULL ,
       status VARCHAR(10) NOT NULL,
     );
@@ -403,15 +403,15 @@ AS
                 isPercent
         FROM    dbo.tblDiscount
         WHERE   code = @code
-		AND status = 'active'
-		AND CAST(expiryDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
+                AND status = 'active'
+                AND CAST(expiryDate AS DATE) >= CAST(CURRENT_TIMESTAMP AS DATE)
                 AND @code NOT IN ( SELECT   discountCode
                                    FROM     dbo.tblUserUsedDiscount
                                    WHERE    userId = @userId );
     END;
 GO
 
-INSERT INTO dbo.tblDiscount
+INSERT  INTO dbo.tblDiscount
         ( code ,
           discount ,
           isPercent ,
@@ -423,6 +423,32 @@ VALUES  ( '10' , -- code - varchar(20)
           1 , -- isPercent - bit
           '8/22/2020' , -- expiryDate - datetime
           'active'  -- status - varchar(10)
-        )
+        );
 
+GO
+
+
+INSERT  INTO dbo.tblDiscount
+        ( code ,
+          discount ,
+          isPercent ,
+          expiryDate ,
+          status
+        )
+VALUES  ( '11' , -- code - varchar(20)
+          10 , -- discount - int
+          1 , -- isPercent - bit
+          '10/22/2020' , -- expiryDate - datetime
+          'active'  -- status - varchar(10)
+        );
+GO
+--CREATE PROC Checkout
+--@tours AS VARCHAR(100),
+--@totalPrice AS INT
+--AS
+--BEGIN
 	
+--END
+--GO
+
+

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import oiog.dreamtraveling.daos.TourDAO;
 import oiog.dreamtraveling.dtos.TourDTO;
+import oiog.dreamtraveling.dtos.UserDTO;
 import org.apache.log4j.Logger;
 
 /**
@@ -39,6 +40,7 @@ public class ViewCartController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        boolean isCheckout = request.getAttribute("checkout") != null;
         try {
             Map<Integer, TourDTO> viewCart = null;
             HttpSession session = request.getSession();
@@ -63,11 +65,20 @@ public class ViewCartController extends HttpServlet {
                 });
                 request.setAttribute("view_cart", viewCart);
                 request.setAttribute("over_quantity", overQuantity);
+                if (isCheckout && overQuantity.isEmpty()) {
+                    Integer totalPrice = (Integer) session.getAttribute("total_price");
+                    String discountCode = (String) session.getAttribute("discount_code");
+                    if (totalPrice != null) {
+                        /*=== do checkout ===*/
+                        UserDTO user = (UserDTO) session.getAttribute("user");
+                        
+                    }
+                }
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             request.setAttribute("error", "Server busy please try again");
-        }finally{
+        } finally {
             request.getRequestDispatcher(VIEW_CART_P).forward(request, response);
         }
     }
