@@ -497,3 +497,5 @@ AS
         WHERE   id = @tourId;
     END;
 GO 
+
+SELECT * FROM dbo.tblTour
